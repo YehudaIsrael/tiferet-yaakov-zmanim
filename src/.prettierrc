@@ -1,0 +1,18 @@
+{
+  "endOfLine": "lf",
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "arrowParens": "avoid",
+  "printWidth": 100,
+  "importOrder": [
+    "../enableDevHmr",
+    "^react$",
+    "react",
+    "^@ironvest/",
+    "<THIRD_PARTY_MODULES>",
+    "^~/",
+    "^[./](?!.+\\.(\\w){1})",
+    "^[./].+\\.(\\w){1}"
+  ]
+}
