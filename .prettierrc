@@ -5,6 +5,7 @@
   "trailingComma": "es5",
   "arrowParens": "avoid",
   "printWidth": 100,
+  "parser": "typescript",
   "importOrder": [
     "../enableDevHmr",
     "^react$",

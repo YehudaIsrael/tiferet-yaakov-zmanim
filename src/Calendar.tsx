@@ -1,5 +1,6 @@
 import Afternoon from './components/Afternoon';
 import Morning from './components/Morning';
+import Night from './components/Night';
 import { DaySection } from './enums';
 import { useCalendar } from './hooks';
 
@@ -12,7 +13,13 @@ export default function Calendar() {
       <div className="jewish-date">
         יום {today['יום בשבוע']} - {today['תאריך']}
       </div>
-      {daySection === DaySection.Morning ? <Morning today={today} /> : <Afternoon today={today} />}
+      {daySection === DaySection.Morning ? (
+        <Morning today={today} />
+      ) : daySection === DaySection.Afternoon ? (
+        <Afternoon today={today} />
+      ) : (
+        <Night today={today} />
+      )}
     </div>
   );
 }

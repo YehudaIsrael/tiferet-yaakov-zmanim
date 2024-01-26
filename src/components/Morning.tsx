@@ -1,8 +1,9 @@
+import { Today } from '../types';
 import AfterClock from './AfterClock';
 import BeforeClock from './BeforeClock';
 import Time from './Time';
 
-export default function Morning({ today }: any) {
+export default function Morning({ today }: Today) {
   return (
     <div className="grid">
       <div></div>
