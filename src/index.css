@@ -29,15 +29,20 @@ body {
   font-size: 60px;
 }
 
-.jewish-date {
+.jewish-week {
+  margin-top: 15  px;
+  font-size: 90px;
+}
+
+.jewish-week {
   margin-top: 10px;
-  font-size: 110px;
+  font-size: 80px;
 }
 
 .grid {
   direction: rtl;
   max-width: 51.5em;
-  height: 15em;
+  height: 14em;
   display: inline-grid;
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 6.5em;
