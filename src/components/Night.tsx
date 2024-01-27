@@ -8,26 +8,16 @@ export default function Night({ today }: Today) {
     <div className="grid">
       <BeforeClock today={today} />
 
-      <div></div>
-
       <AfterClock today={today} />
-
-      <div></div>
 
       <Time />
 
-      <div></div>
-
-      <div></div>
-
-      <div>
+      <div className='bottom-left'>
         <label>חצות</label>
         <div className="time">{today['חצות יום ולילה']?.slice(0, -1)}</div>
       </div>
 
-      <div></div>
-
-      <div>
+      <div className='bottom-right'>
         <label>הנץ החמה</label>
         <div className="time">{today['נץ החמה קטגוריה']}</div>
       </div>

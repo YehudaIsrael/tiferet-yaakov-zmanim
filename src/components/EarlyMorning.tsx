@@ -12,17 +12,17 @@ export default function Morning({ today }: Today) {
 
       <AfterClock today={today} />
 
-      <div>
+      <div className="bottom-left">
         <label>הנץ החמה</label>
         <div className="time">{today['נץ החמה קטגוריה']}</div>
       </div>
 
-      <div>
+      <div className="center">
         <label>סו"ז ק"ש גר"א</label>
         <div className="time">{today['סו"ז ק"ש גר"א קטגוריה']?.slice(0, -1)}</div>
       </div>
 
-      <div>
+      <div className="bottom-right">
         <label>סו"ז תפילה גר"א</label>
         <div className="time">{today['סו"ז תפילה גר"א קטגוריה']?.slice(0, -1)}</div>
       </div>
