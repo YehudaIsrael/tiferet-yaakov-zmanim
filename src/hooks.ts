@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DaySection } from './enums';
 import { Context } from './context';
 import { Today } from './types';
+
+dayjs.extend(customParseFormat);
 
 export const useTime = () => {
   const timeNow = new Date().toLocaleTimeString();
@@ -24,11 +27,11 @@ export const useTime = () => {
 };
 
 export const useCalendar = () => {
-  const dateNow = dayjs(new Date()).format('DD.M.YYYY');
+  const dateNow = dayjs(new Date()).format('D.M.YYYY');
   const [date, setDate] = useState(dateNow);
   const [today, setToday] = useState<Today>({});
   const [daySection, setDaySection] = useState<DaySection | null>(null);
-  const [parsha, setParsha]= useState('')
+  const [parsha, setParsha] = useState('');
   const { calendarData, setCalendarData } = useContext(Context);
   const navigate = useNavigate();
 
@@ -36,7 +39,6 @@ export const useCalendar = () => {
     const interval = setInterval(() => {
       const newTime = dayjs(new Date()).format('D.M.YYYY');
       if (newTime !== date) {
-        // const test = dayjs().subtract(, 'day');
         setDate(dayjs(newTime).format('D.M.YYYY'));
         fetchParsha();
       }
@@ -57,17 +59,18 @@ export const useCalendar = () => {
   useEffect(() => {
     if (!calendarData.length) return;
 
-    const todayRow: { [key: string]: any } | undefined = calendarData.find(day => {
+    const todayRow: any = calendarData.find(day => {
       return day['תאריך לועזי'] === date;
     });
 
     if (!todayRow) return navigate('/upload');
 
-    const now = dayjs();
-    const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה']).subtract(3, 'hours');
-    const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה']).add(30, 'minutes');
-    const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה']).add(30, 'minutes');
-    const night = dayjs(todayRow['שקיעה קטגוריה']).add(45, 'minutes');
+    const now = dayjs().subtract(2, 'day');
+    const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
+    const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
+    const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה'], 'HH:mm').add(30, 'minutes');
+    const night = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm:ss').add(12, 'hours').add(45, 'minutes');
+
     if (now > beforeHaneitz && now < afterHaneitz) {
       setDaySection(DaySection.EarlyMorning);
     } else if (now > afterHaneitz && now < afternoon) {

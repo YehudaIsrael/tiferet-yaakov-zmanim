@@ -17,14 +17,14 @@ export default function Morning({ today }: Today) {
         <div className="time">{today['סו"ז ק"ש גר"א קטגוריה']?.slice(0, -1)}</div>
       </div>
 
-      <div className="center">
+      <div className="bottom-center">
         <label>סו"ז תפילה גר"א</label>
         <div className="time">{today['סו"ז תפילה גר"א קטגוריה']?.slice(0, -1)}</div>
       </div>
 
       <div className="bottom-right">
         <label>סו"ז תפילה גר"א</label>
-        <div className="time">{today['סו"ז תפילה גר"א קטגוריה']}</div>
+        <div className="time">{today['סו"ז תפילה גר"א קטגוריה']?.slice(0, -1)}</div>
       </div>
     </div>
   );

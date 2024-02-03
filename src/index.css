@@ -43,9 +43,9 @@ body {
   direction: rtl;
   display: grid;
   grid-template-areas:
-    'top-left . top-right'
-    'center-top center center-bottom'
-    'bottom-left . bottom-right';
+    'top-left . top-center . top-right'
+    'left .center . right'
+    'bottom-left . bottom-center . bottom-right';
   justify-items: center;
   align-items: center;
   height: 10vh;
@@ -55,8 +55,8 @@ body {
   grid-area: top-left;
 }
 
-.center-top {
-  grid-area: center-top;
+.top-center {
+  grid-area: top-center;
 }
 
 .top-right {
@@ -71,12 +71,16 @@ body {
   grid-area: bottom-left;
 }
 
-.center-bottom {
-  grid-area: center-bottom;
+.bottom-center {
+  grid-area: bottom-center;
 }
 
 .bottom-right {
   grid-area: bottom-right;
+}
+
+.placeholder {
+  height: 160px;
 }
 
 label {

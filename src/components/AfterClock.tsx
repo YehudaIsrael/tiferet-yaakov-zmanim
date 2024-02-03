@@ -6,7 +6,9 @@ export default function AfterClock({ today }: any) {
           <label>צאת שבת ר"ת</label>
           <div className="time">{today['צאת הכוכבים ר"ת 72 קטגוריה']?.slice(0, -1)}</div>
         </div>
-      ) : null}
+      ) : (
+        <div className="placeholder"></div>
+      )}
     </>
   );
 }

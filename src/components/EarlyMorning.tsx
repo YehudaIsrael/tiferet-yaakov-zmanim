@@ -17,7 +17,7 @@ export default function Morning({ today }: Today) {
         <div className="time">{today['נץ החמה קטגוריה']}</div>
       </div>
 
-      <div className="center">
+      <div className="bottom-center">
         <label>סו"ז ק"ש גר"א</label>
         <div className="time">{today['סו"ז ק"ש גר"א קטגוריה']?.slice(0, -1)}</div>
       </div>

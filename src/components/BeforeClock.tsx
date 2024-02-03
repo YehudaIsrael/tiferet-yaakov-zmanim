@@ -16,7 +16,9 @@ export default function BeforeClock({ today }: any) {
           <label>צאת הצום</label>
           <div className="time">{today['צאת תשעה באב הנהוג']?.slice(0, -1)}</div>
         </>
-      ) : null}
+      ) : (
+        <div className="placeholder"></div>
+      )}
     </div>
   );
 }
