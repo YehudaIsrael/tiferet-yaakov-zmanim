@@ -65,7 +65,7 @@ export const useCalendar = () => {
 
     if (!todayRow) return navigate('/upload');
 
-    const now = dayjs().subtract(2, 'day');
+    const now = dayjs()
     const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
     const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
     const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה'], 'HH:mm').add(30, 'minutes');

@@ -9,7 +9,7 @@ export default function Calendar() {
   const { today, parsha, daySection } = useCalendar();
   return (
     <div className="container">
-      <div className="name">התוכנה נתרמה לעילוי נשמת חיים ישראל פינחס בן משה אהרון</div>
+      <div className="name">התכנה נתרמה לעילוי נשמת חיים ישראל פינחס בן משה אהרון</div>
 
       <div className="jewish-week">
         יום {today['יום בשבוע']} פרשת {parsha}
