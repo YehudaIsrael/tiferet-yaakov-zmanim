@@ -65,6 +65,8 @@ export const useCalendar = () => {
 
     if (!todayRow) return navigate('/upload');
 
+    console.log(todayRow)
+
     const now = dayjs()
     const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
     const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
@@ -89,7 +91,6 @@ export const useCalendar = () => {
     fetch(url)
       .then(resp => resp.json())
       .then(res => {
-        console.log(res.calendar_items[0].displayValue.he);
         setParsha(res.calendar_items[0].displayValue.he);
       })
       .catch(err => console.error(err));
