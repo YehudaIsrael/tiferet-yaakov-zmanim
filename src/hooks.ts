@@ -9,14 +9,12 @@ import { Today } from './types';
 dayjs.extend(customParseFormat);
 
 export const useTime = () => {
-  const timeNow = new Date().toLocaleTimeString();
+  const timeNow = dayjs(new Date()).format("HH:mm:ss")
   const [time, setTime] = useState(timeNow);
 
   useEffect(() => {
-    let interval: NodeJS.Timer;
-    interval = setInterval(() => {
-      const newTime = new Date();
-      setTime(newTime.toLocaleTimeString());
+    const interval = setInterval(() => {
+      setTime(dayjs(new Date()).format("HH:mm:ss"));
     }, 1000);
 
     return () => clearInterval(interval);

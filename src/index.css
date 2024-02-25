@@ -1,5 +1,7 @@
-body {
+html, body, #id {
+  height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 .container {
@@ -10,6 +12,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   font-size: 50px;
+  height: 100%;
 }
 
 .container:after {
@@ -26,17 +29,17 @@ body {
 }
 
 .name {
-  font-size: 60px;
+  font-size: 75px;
 }
 
 .jewish-week {
   margin-top: 15px;
-  font-size: 90px;
+  font-size: 100px;
 }
 
 .jewish-date {
   margin-top: 10px;
-  font-size: 70px;
+  font-size: 80px;
 }
 
 .grid {
@@ -48,7 +51,6 @@ body {
     'bottom-left . bottom-center . bottom-right';
   justify-items: center;
   align-items: center;
-  height: 10vh;
 }
 
 .top-left {
@@ -84,15 +86,17 @@ body {
 }
 
 label {
-  font-size: 60px;
+  font-size: 77px;
 }
 
 .time {
-  font-size: 120px;
+  font-size: 130px;
 }
 
 .time-now {
   font-size: 220px;
+  margin-top: -80px;
+  margin-bottom: 80px;
 }
 
 .shabbat-space {
