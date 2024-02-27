@@ -24,8 +24,10 @@ export const useTime = () => {
   return { time };
 };
 
+const getFormattedDate = () => dayjs(new Date()).format('D.M.YYYY')
+
 export const useCalendar = () => {
-  const dateNow = dayjs(new Date()).format('D.M.YYYY');
+  const dateNow = getFormattedDate();
   const [date, setDate] = useState(dateNow);
   const [today, setToday] = useState<Today>({});
   const [daySection, setDaySection] = useState<DaySection | null>(null);
@@ -33,11 +35,12 @@ export const useCalendar = () => {
   const { calendarData, setCalendarData } = useContext(Context);
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const interval = setInterval(() => {
-      const newTime = dayjs(new Date()).format('D.M.YYYY');
+      const newTime = getFormattedDate();
+      setDate(newTime);
       if (newTime !== date) {
-        setDate(dayjs(newTime).format('D.M.YYYY'));
         fetchParsha();
       }
     }, 60000);
@@ -46,6 +49,7 @@ export const useCalendar = () => {
 
     const data = localStorage.getItem('calendar') || '';
     if (!data) {
+      console.log('need to upload a file')
       navigate('/upload');
     }
     setCalendarData(JSON.parse(data));

@@ -23,7 +23,7 @@ export default function Morning({ today }: Today) {
       </div>
 
       <div className="bottom-right">
-        <label>סו"ז תפילה גר"א</label>
+        <label>סו"ז תפלה גר"א</label>
         <div className="time">{today['סו"ז תפילה גר"א קטגוריה']?.slice(0, -1)}</div>
       </div>
     </div>
