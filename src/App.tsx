@@ -1,12 +1,8 @@
-import { useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Calendar from './Calendar';
 import Upload from './Upload';
-import { Context } from './context';
 
 export default function App() {
-  const [calendarData, setCalendarData] = useState([]);
-
   const router = createBrowserRouter([
     {
       path: '/',
@@ -18,9 +14,5 @@ export default function App() {
     },
   ]);
 
-  return (
-    <Context.Provider value={{ calendarData, setCalendarData }}>
-      <RouterProvider router={router} />
-    </Context.Provider>
-  );
+  return <RouterProvider router={router} />;
 }

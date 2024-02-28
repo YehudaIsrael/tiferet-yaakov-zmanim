@@ -1,30 +1,28 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DaySection } from './enums';
-import { Context } from './context';
 import { Today } from './types';
 
 dayjs.extend(customParseFormat);
 
 export const useTime = () => {
-  const timeNow = dayjs(new Date()).format("HH:mm:ss")
+  const timeNow = dayjs(new Date()).format('HH:mm:ss');
   const [time, setTime] = useState(timeNow);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(dayjs(new Date()).format("HH:mm:ss"));
+      setTime(dayjs(new Date()).format('HH:mm:ss'));
     }, 1000);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { time };
 };
 
-const getFormattedDate = () => dayjs(new Date()).format('D.M.YYYY')
+const getFormattedDate = () => dayjs(new Date()).format('D.M.YYYY');
 
 export const useCalendar = () => {
   const dateNow = getFormattedDate();
@@ -32,34 +30,15 @@ export const useCalendar = () => {
   const [today, setToday] = useState<Today>({});
   const [daySection, setDaySection] = useState<DaySection | null>(null);
   const [parsha, setParsha] = useState('');
-  const { calendarData, setCalendarData } = useContext(Context);
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newTime = getFormattedDate();
-      setDate(newTime);
-      if (newTime !== date) {
-        fetchParsha();
-      }
-    }, 60000);
-
-    fetchParsha();
-
     const data = localStorage.getItem('calendar') || '';
     if (!data) {
-      console.log('need to upload a file')
       navigate('/upload');
     }
-    setCalendarData(JSON.parse(data));
 
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!calendarData.length) return;
+    const calendarData: [] = JSON.parse(data);
 
     const todayRow: any = calendarData.find(day => {
       return day['תאריך לועזי'] === date;
@@ -67,9 +46,26 @@ export const useCalendar = () => {
 
     if (!todayRow) return navigate('/upload');
 
-    console.log(todayRow)
+    selectDaySection(todayRow);
 
-    const now = dayjs()
+    const interval = setInterval(() => {
+      const newTime = getFormattedDate();
+      setDate(newTime);
+      if (newTime !== date) {
+        fetchParsha();
+      }
+      selectDaySection(todayRow);
+    }, 60000);
+
+    fetchParsha();
+
+    setToday(todayRow);
+
+    return () => clearInterval(interval);
+  }, [date, navigate]);
+
+  const selectDaySection = (todayRow: any) => {
+    const now = dayjs();
     const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
     const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
     const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה'], 'HH:mm').add(30, 'minutes');
@@ -84,8 +80,7 @@ export const useCalendar = () => {
     } else {
       setDaySection(DaySection.Night);
     }
-    setToday(todayRow);
-  }, [calendarData, date, navigate]);
+  };
 
   const fetchParsha = () => {
     const url =
