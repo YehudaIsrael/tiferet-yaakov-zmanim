@@ -33,33 +33,30 @@ body,
   font-size: 75px;
 }
 
-.jewish-week {
-  margin-top: 15px;
-  font-size: 100px;
-}
-
+.jewish-week,
 .jewish-date {
   margin-top: 10px;
-  font-size: 100px;
+  font-size: 110px;
 }
 
 .grid {
   direction: rtl;
   display: grid;
   grid-template-areas:
-    'top-left . top-center . top-right'
-    'left .center . right'
-    'bottom-left . bottom-center . bottom-right';
+    'top-left top-center top-right'
+    'center center center'
+    'bottom-left bottom-center bottom-right';
+  grid-template-columns: 1fr 1.25fr 1fr;
   justify-items: center;
   align-items: center;
 }
 
-.top-left {
-  grid-area: top-left;
+.top-left, .top-right {
+  margin-top: -25px;
 }
 
-.top-center {
-  grid-area: top-center;
+.top-left {
+  grid-area: top-left;
 }
 
 .top-right {
@@ -83,21 +80,22 @@ body,
 }
 
 .placeholder {
-  height: 160px;
+  height: 210px;
 }
 
 label {
-  font-size: 77px;
+  font-size: 85px;
 }
 
 .time {
   font-size: 150px;
+  margin-top: -15px;
 }
 
 .time-now {
-  font-size: 255px;
-  margin-top: -150px;
-  margin-bottom: 80px;
+  font-size: 280px;
+  margin-top: -110px;
+  margin-bottom: 25px;
 }
 
 .shabbat-space {
