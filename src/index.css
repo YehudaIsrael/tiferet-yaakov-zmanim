@@ -94,8 +94,8 @@ label {
 
 .time-now {
   font-size: 280px;
-  margin-top: -110px;
-  margin-bottom: 25px;
+  line-height: 0.8;
+  margin: -15px 0 15px;
 }
 
 .shabbat-space {

@@ -12,12 +12,12 @@ export default function Night({ today }: Today) {
 
       <Time />
 
-      <div className='bottom-left'>
+      <div className="bottom-left">
         <label>חצות</label>
         <div className="time">{today['חצות יום ולילה']?.slice(0, -1)}</div>
       </div>
 
-      <div className='bottom-right'>
+      <div className="bottom-right">
         <label>הנץ החמה</label>
         <div className="time">{today['נץ החמה קטגוריה']}</div>
       </div>

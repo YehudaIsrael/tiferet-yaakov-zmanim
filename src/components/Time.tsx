@@ -1,4 +1,4 @@
-import { useTime } from '../hooks';
+import { useTime } from '../hooks/useTime';
 
 export default function Time() {
   const { time } = useTime();

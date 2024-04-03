@@ -1,35 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { DaySection } from './enums';
-import { Today } from './types';
+import { DaySection } from '../enums';
+import { Today } from '../types';
 
 dayjs.extend(customParseFormat);
-
-export const useTime = () => {
-  const timeNow = dayjs(new Date()).format('h:mm:ss');
-  const [time, setTime] = useState(timeNow);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(dayjs(new Date()).format('h:mm:ss'));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return { time };
-};
 
 const getFormattedDate = () => dayjs(new Date()).format('D.M.YYYY');
 
 export const useCalendar = () => {
   const dateNow = getFormattedDate();
-  const [date, setDate] = useState(dateNow);
+  const [date, setDate] = useState<string>(dateNow);
   const [today, setToday] = useState<Today>({});
   const [daySection, setDaySection] = useState<DaySection | null>(null);
   const [parsha, setParsha] = useState('');
+  const calendarData = useRef([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,9 +24,9 @@ export const useCalendar = () => {
       navigate('/upload');
     }
 
-    const calendarData: [] = JSON.parse(data);
+    calendarData.current = JSON.parse(data);
 
-    const todayRow: any = calendarData.find(day => {
+    const todayRow: any = calendarData.current.find(day => {
       return day['תאריך לועזי'] === date;
     });
 
@@ -54,6 +40,7 @@ export const useCalendar = () => {
       if (newTime !== date) {
         fetchParsha();
       }
+      getNextDay(todayRow);
       selectDaySection(todayRow);
     }, 60000);
 
@@ -62,14 +49,15 @@ export const useCalendar = () => {
     setToday(todayRow);
 
     return () => clearInterval(interval);
-  }, [date, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date]);
 
-  const selectDaySection = (todayRow: any) => {
+  const selectDaySection = (todayRow: Today) => {
     const now = dayjs();
     const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
     const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
     const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה'], 'HH:mm').add(30, 'minutes');
-    const night = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm:ss').add(12, 'hours').add(45, 'minutes');
+    const night = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm').add(12, 'hours').add(20, 'minutes');
 
     if (now > beforeHaneitz && now < afterHaneitz) {
       setDaySection(DaySection.EarlyMorning);
@@ -93,5 +81,20 @@ export const useCalendar = () => {
       .catch(err => console.error(err));
   };
 
-  return { today, daySection, parsha };
+  const getNextDay = (todayRow: Today) => {
+    if (!Object.keys(todayRow).length || !calendarData.current.length) return;
+    const nightfall = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm:ss').add(12, 'hours').add(20, 'minutes');
+    const now = dayjs();
+    const tomorrow = now.add(1, 'day').startOf('day');
+
+    if (now > nightfall && now < tomorrow) {
+      const tomorrowFormatted = tomorrow.format('D.M.YYYY');
+      const nextRow = calendarData.current.find(day => day['תאריך לועזי'] === tomorrowFormatted);
+      if (!nextRow || nextRow['תאריך לועזי'] === todayRow['תאריך לועזי']) return;
+      return nextRow;
+    }
+    return;
+  };
+
+  return { today, daySection, parsha, getNextDay };
 };
