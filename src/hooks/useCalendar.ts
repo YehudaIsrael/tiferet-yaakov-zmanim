@@ -83,9 +83,20 @@ export const useCalendar = () => {
 
   const getNextDay = (todayRow: Today) => {
     if (!Object.keys(todayRow).length || !calendarData.current.length) return;
-    const nightfall = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm:ss').add(12, 'hours').add(20, 'minutes');
+    const nightfall = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm:ss')
+      .add(12, 'hours')
+      .add(20, 'minutes');
     const now = dayjs();
     const tomorrow = now.add(1, 'day').startOf('day');
+
+    if (today['צאת הכוכבים ר"ת 72 שוות קטגוריה']) {
+      const afterShabbat = dayjs(todayRow['צאת הכוכבים ר"ת 72 שוות קטגוריה'], 'HH:mm:ss')
+        .add(12, 'hours')
+        .add(10, 'minutes');
+      if (now < afterShabbat) {
+        return;
+      }
+    }
 
     if (now > nightfall && now < tomorrow) {
       const tomorrowFormatted = tomorrow.format('D.M.YYYY');
