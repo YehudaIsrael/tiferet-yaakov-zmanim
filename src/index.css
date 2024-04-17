@@ -39,6 +39,17 @@ body,
   font-size: 110px;
 }
 
+.omer {
+  position: fixed;
+  top:90px;
+  left: 50px;
+  font-size: 115px;
+  line-height: .9;
+  padding: 15px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 20px 20px;
+  border-radius: 20px;
+}
+
 .grid {
   direction: rtl;
   display: grid;
@@ -94,8 +105,8 @@ label {
 
 .time-now {
   font-size: 280px;
-  line-height: 0.8;
-  margin: -15px 0 15px;
+  line-height: 0.85;
+  margin: -20px 0 20px;
 }
 
 .shabbat-space {

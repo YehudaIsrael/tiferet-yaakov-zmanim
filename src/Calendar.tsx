@@ -26,6 +26,13 @@ export default function Calendar() {
       </div>
       <div className="jewish-date">{day['תאריך']?.replace(" ה'", '')}</div>
 
+      {day['ספירת העומר'] && (
+        <div className="omer">
+          <label>סה"ע</label>
+          <div>{day['ספירת העומר']}</div>
+        </div>
+      )}
+
       {daySection === DaySection.EarlyMorning ? (
         <EarlyMorning today={day} />
       ) : daySection === DaySection.Morning ? (
