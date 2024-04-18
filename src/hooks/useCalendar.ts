@@ -14,6 +14,7 @@ export const useCalendar = () => {
   const [date, setDate] = useState<string>(dateNow);
   const [today, setToday] = useState<Today>({});
   const [daySection, setDaySection] = useState<DaySection | null>(null);
+  const [dayTitle, setDayTitle] = useState('יום');
   const [parsha, setParsha] = useState('');
   const calendarData = useRef([]);
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ export const useCalendar = () => {
     if (!todayRow) return navigate('/upload');
 
     selectDaySection(todayRow);
+    setTomorrowDate(todayRow);
 
     const interval = setInterval(() => {
       const newTime = getFormattedDate();
@@ -40,17 +42,15 @@ export const useCalendar = () => {
       if (newTime !== date) {
         fetchParsha();
       }
-      getNextDay(todayRow);
       selectDaySection(todayRow);
+      setTomorrowDate(todayRow);
     }, 60000);
 
     fetchParsha();
 
-    setToday(todayRow);
-
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date]);
+  }, [date, navigate]);
 
   const selectDaySection = (todayRow: Today) => {
     const now = dayjs();
@@ -81,6 +81,12 @@ export const useCalendar = () => {
       .catch(err => console.error(err));
   };
 
+  const setTomorrowDate = (todayRow: Today) => {
+    const newDay = getNextDay(todayRow);
+    setToday(newDay || todayRow);
+    setDayTitle(newDay ? 'ליל ' : 'יום');
+  };
+
   const getNextDay = (todayRow: Today) => {
     if (!Object.keys(todayRow).length || !calendarData.current.length) return;
     const nightfall = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm:ss')
@@ -107,5 +113,5 @@ export const useCalendar = () => {
     return;
   };
 
-  return { today, daySection, parsha, getNextDay };
+  return { today, daySection, dayTitle, parsha };
 };
