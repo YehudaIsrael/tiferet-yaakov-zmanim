@@ -95,10 +95,14 @@ export const useCalendar = () => {
     const now = dayjs();
     const tomorrow = now.add(1, 'day').startOf('day');
 
-    if (today['צאת הכוכבים ר"ת 72 שוות קטגוריה']) {
+    if (todayRow['צאת הכוכבים ר"ת 72 שוות קטגוריה']) {
       const afterShabbat = dayjs(todayRow['צאת הכוכבים ר"ת 72 שוות קטגוריה'], 'HH:mm:ss')
         .add(12, 'hours')
         .add(10, 'minutes');
+      if (todayRow['ספירת העומר']) {
+        todayRow['ספירת העומר'] = +todayRow['ספירת העומר'] + 1;
+        return todayRow;
+      }
       if (now < afterShabbat) {
         return;
       }
