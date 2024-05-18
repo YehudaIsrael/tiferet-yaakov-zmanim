@@ -7,7 +7,9 @@ import { Today } from '../types';
 
 dayjs.extend(customParseFormat);
 
-const getFormattedDate = () => dayjs(new Date()).format('D.M.YYYY');
+const testDate = new Date();
+
+const getFormattedDate = () => dayjs(testDate).format('D.M.YYYY');
 
 export const useCalendar = () => {
   const dateNow = getFormattedDate();
@@ -27,7 +29,7 @@ export const useCalendar = () => {
 
     calendarData.current = JSON.parse(data);
 
-    const todayRow: any = calendarData.current.find(day => {
+    const todayRow = calendarData.current.find(day => {
       return day['תאריך לועזי'] === date;
     });
 
@@ -53,7 +55,7 @@ export const useCalendar = () => {
   }, [date, navigate]);
 
   const selectDaySection = (todayRow: Today) => {
-    const now = dayjs();
+    const now = dayjs(testDate);
     const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
     const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
     const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה'], 'HH:mm').add(30, 'minutes');
@@ -93,7 +95,7 @@ export const useCalendar = () => {
       .add(12, 'hours')
       .add(20, 'minutes');
 
-    const now = dayjs();
+    const now = dayjs(testDate);
     const tomorrow = now.add(1, 'day').startOf('day');
     const tomorrowFormatted = tomorrow.format('D.M.YYYY');
     const nextRow = calendarData.current.find(day => day['תאריך לועזי'] === tomorrowFormatted);
@@ -103,7 +105,7 @@ export const useCalendar = () => {
         .add(12, 'hours')
         .add(10, 'minutes');
       if (now < afterShabbat) {
-        if (todayRow['ספירת העומר'] && nightfall < afterShabbat) {
+        if (todayRow['ספירת העומר'] && now > nightfall) {
           todayRow['ספירת העומר'] = nextRow?.['ספירת העומר'] || '';
           return todayRow;
         }
