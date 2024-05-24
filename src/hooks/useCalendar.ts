@@ -7,9 +7,9 @@ import { Today } from '../types';
 
 dayjs.extend(customParseFormat);
 
-const testDate = new Date();
+const testDate = () => new Date();
 
-const getFormattedDate = () => dayjs(testDate).format('D.M.YYYY');
+const getFormattedDate = () => dayjs(testDate()).format('D.M.YYYY');
 
 export const useCalendar = () => {
   const dateNow = getFormattedDate();
@@ -55,7 +55,7 @@ export const useCalendar = () => {
   }, [date, navigate]);
 
   const selectDaySection = (todayRow: Today) => {
-    const now = dayjs(testDate);
+    const now = dayjs(testDate());
     const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
     const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
     const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה'], 'HH:mm').add(30, 'minutes');
@@ -95,7 +95,7 @@ export const useCalendar = () => {
       .add(12, 'hours')
       .add(20, 'minutes');
 
-    const now = dayjs(testDate);
+    const now = dayjs(testDate());
     const tomorrow = now.add(1, 'day').startOf('day');
     const tomorrowFormatted = tomorrow.format('D.M.YYYY');
     const nextRow = calendarData.current.find(day => day['תאריך לועזי'] === tomorrowFormatted);
