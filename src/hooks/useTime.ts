@@ -5,12 +5,12 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 
 export const useTime = () => {
-  const timeNow = dayjs(new Date()).format('h:mm:ss');
+  const timeNow = dayjs().format('H:mm:ss');
   const [time, setTime] = useState(timeNow);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(dayjs(new Date()).format('h:mm:ss'));
+      setTime(dayjs().format('H:mm:ss'));
     }, 1000);
 
     return () => clearInterval(interval);
