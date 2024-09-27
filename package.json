@@ -2,7 +2,11 @@
   "name": "tiferet-yaakov-calendar",
   "version": "1.0.0",
   "private": false,
-  "author": "Yehuda Israel",
+  "description": "Daily zmanim for Kokhav Yaakov and Tel Zion",
+  "author": {
+    "name": "Yehuda Israel",
+    "email": "Yehuda_Fievel@yahoo.com"
+  },
   "dependencies": {
     "dayjs": "^1.11.10",
     "electron-pack": "^1.3.2",
@@ -20,6 +24,7 @@
     "concurrently": "^8.2.2",
     "electron": "^31.4.0",
     "electron-builder": "^24.13.3",
+    "serve": "^14.2.3",
     "typescript": "^4.4.2",
     "wait-on": "^7.2.0"
   },
@@ -28,20 +33,28 @@
     "electron-start": "wait-on http://localhost:3000 && yarn electron",
     "electron": "electron electron",
     "start": "concurrently \"BROWSER=none yarn react-start\" \"yarn electron-start\"",
-    "react-build": "react-scripts build",
-    "electron-build": "electron-builder",
-    "build": "yarn react-build && yarn electron-build",
-    "release": "yarn react-build && electron-builder --publish=always"
+    "build": "react-scripts build",
+    "serve": "serve -s build",
+    "postbuild": "cp ./electron.js ./build/electron.js && cp ./electron.js ./public/electron.js",
+    "postinstall": "electron-builder install-app-deps",
+    "package": "BUILD=true DEBUG=electron-builder electron-builder --dir",
+    "builder": "BUILD=true electron-builder",
+    "release": "yarn build && yarn builder"
   },
   "main": "electron.js",
   "build": {
+    "publish": null,
     "appId": "com.example.electron-cra",
+    "linux": {
+      "target": ["AppImage", "deb"]
+    },
     "files": [
       "build/**/*",
+      "package.json",
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "output": "dist"
     }
   },
   "eslintConfig": {

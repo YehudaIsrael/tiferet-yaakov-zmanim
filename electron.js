@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const { path } = require('path')
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -9,15 +10,16 @@ function createWindow() {
         },
     });
 
-    // Use the development server URL
-    const startUrl = process.env.ELECTRON_START_URL || 'http://localhost:3000';
+    const startUrl = process.env.BUILD
+        ? `file://${path.join(app.getAppPath(), 'build/index.html')}`
+        : 'http://localhost:3000';
+
     mainWindow.loadURL(startUrl);
 
     mainWindow.on('closed', () => {
         app.quit();
     });
 }
-
 
 app.on('ready', createWindow);
 

@@ -5,11 +5,14 @@
 /.pnp
 .pnp.js
 
+public/electron.js
+
 # testing
 /coverage
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
