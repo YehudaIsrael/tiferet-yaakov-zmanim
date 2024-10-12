@@ -12,10 +12,24 @@ export default function BeforeClock({ today }: any) {
             {convert24HrTime(today['צאת שבת רגיל מקטגוריה']?.slice(0, -1))}
           </div>
         </>
+      ) : today['צאת החג רגיל מקטגוריה'] ? (
+        <>
+          <label>הדלקת נרות</label>
+          <div className="time">
+            {convert24HrTime(today['צאת החג רגיל מקטגוריה']?.slice(0, -1))}
+          </div>
+        </>
       ) : today['הדלקת נרות קטגוריה'] ? (
         <>
           <label>הדלקת נרות</label>
           <div className="time">{convert24HrTime(today['הדלקת נרות קטגוריה']?.slice(0, -1))}</div>
+        </>
+      ) : today['הדלקת נרות החג קטגוריה'] ? (
+        <>
+          <label>הדלקת נרות</label>
+          <div className="time">
+            {convert24HrTime(today['הדלקת נרות החג קטגוריה']?.slice(0, -1))}
+          </div>
         </>
       ) : today['צאת תשעה באב הנהוג'] ? (
         <>
