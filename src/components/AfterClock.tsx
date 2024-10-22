@@ -7,7 +7,7 @@ export default function AfterClock({ today }: any) {
 
   return (
     <>
-      {today['צאת שבת רגיל מקטגוריה'] ? (
+      {today['צאת הכוכבים ר"ת 72 שוות קטגוריה'] ? (
         <div className="top-right">
           <label>צאת שבת ר"ת</label>
           <div className="time">{shabbatEndTime}</div>

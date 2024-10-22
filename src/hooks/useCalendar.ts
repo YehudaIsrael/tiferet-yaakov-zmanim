@@ -2,14 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { getFormattedDate, getNextDay, testDate } from '../utils';
 import { DaySection } from '../enums';
 import { Today } from '../types';
 
 dayjs.extend(customParseFormat);
-
-const testDate = () => new Date();
-
-const getFormattedDate = () => dayjs(testDate()).format('D.M.YYYY');
 
 export const useCalendar = () => {
   const dateNow = getFormattedDate();
@@ -55,7 +52,7 @@ export const useCalendar = () => {
   }, [date, navigate]);
 
   const selectDaySection = (todayRow: Today) => {
-    const now = dayjs(testDate());
+    const now = testDate();
     const beforeHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm:ss').subtract(3, 'hours');
     const afterHaneitz = dayjs(todayRow['נץ החמה קטגוריה'], 'HH:mm').add(30, 'minutes');
     const afternoon = dayjs(todayRow['סו"ז תפילה גר"א קטגוריה'], 'HH:mm').add(30, 'minutes');
@@ -87,37 +84,6 @@ export const useCalendar = () => {
     const newDay = getNextDay(todayRow);
     setToday(newDay || todayRow);
     setDayTitle(newDay ? 'ליל ' : 'יום');
-  };
-
-  const getNextDay = (todayRow: Today) => {
-    if (!Object.keys(todayRow).length || !calendarData.current.length) return;
-    const nightfall = dayjs(todayRow['שקיעה קטגוריה'], 'HH:mm:ss')
-      .add(12, 'hours')
-      .add(20, 'minutes');
-
-    const now = dayjs(testDate());
-    const tomorrow = now.add(1, 'day').startOf('day');
-    const tomorrowFormatted = tomorrow.format('D.M.YYYY');
-    const nextRow = calendarData.current.find(day => day['תאריך לועזי'] === tomorrowFormatted);
-
-    if (todayRow['צאת הכוכבים ר"ת 72 שוות קטגוריה']) {
-      const afterShabbat = dayjs(todayRow['צאת הכוכבים ר"ת 72 שוות קטגוריה'], 'HH:mm')
-        .add(12, 'hours')
-        .add(10, 'minutes');
-      if (now < afterShabbat) {
-        if (todayRow['ספירת העומר'] && now > nightfall) {
-          todayRow['ספירת העומר'] = nextRow?.['ספירת העומר'] || '';
-          return todayRow;
-        }
-        return;
-      }
-    }
-
-    if (now > nightfall && now < tomorrow) {
-      if (nextRow?.['תאריך לועזי'] === todayRow['תאריך לועזי']) return;
-      return nextRow;
-    }
-    return;
   };
 
   return { today, daySection, dayTitle, parsha };

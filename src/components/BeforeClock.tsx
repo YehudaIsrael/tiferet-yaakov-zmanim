@@ -14,7 +14,7 @@ export default function BeforeClock({ today }: any) {
         </>
       ) : today['צאת החג רגיל מקטגוריה'] ? (
         <>
-          <label>הדלקת נרות</label>
+          <label>צאת החג</label>
           <div className="time">
             {convert24HrTime(today['צאת החג רגיל מקטגוריה']?.slice(0, -1))}
           </div>
