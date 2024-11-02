@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import Afternoon from './components/Afternoon';
 import EarlyMorning from './components/EarlyMorning';
 import Morning from './components/Morning';
@@ -6,10 +7,11 @@ import { DaySection } from './enums';
 import { useCalendar } from './hooks/useCalendar';
 
 export default function Calendar() {
+  const navigate = useNavigate();
   const { today, parsha, daySection, dayTitle } = useCalendar();
 
   return (
-    <div className="container">
+    <div className="container" onClick={() => navigate('/upload')}>
       <div className="name">לעילוי נשמת חיים ישראל פינחס בן משה אהרון</div>
 
       <div className="jewish-week">

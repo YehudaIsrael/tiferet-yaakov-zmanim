@@ -9,7 +9,7 @@ export default function Upload() {
       return;
     }
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = evt => {
       const bstr = evt.target?.result;
       const wb = XLSX.read(bstr, { type: 'binary' });
       const wsname = wb.SheetNames[0];
@@ -22,11 +22,12 @@ export default function Upload() {
   };
 
   return (
-    <>
+    <div className='upload-page'>
       <label htmlFor="file" className="sr-only">
         Choose a file
       </label>
       <input id="file" type="file" onChange={handleFileChange} />
-    </>
+      <button onClick={() => navigate('/')}>Back</button>
+    </div>
   );
 }

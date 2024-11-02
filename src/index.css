@@ -115,3 +115,7 @@ label {
   flex-direction: column;
   justify-content: space-evenly;
 }
+
+.upload-page button, .upload-page input {
+  font-size: 100px;
+}
