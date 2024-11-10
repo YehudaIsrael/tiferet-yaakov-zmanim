@@ -6,25 +6,21 @@ import Night from './components/Night';
 import { DaySection, Paths } from './enums';
 import { useCalendar } from './hooks/useCalendar';
 
-export default function Calendar() {
+export default function Yahrzeit() {
   const navigate = useNavigate();
   const { today, parsha, daySection, dayTitle } = useCalendar();
 
   return (
-    <div className="container" onClick={() => navigate(Paths.Upload)}>
-      <div className="name">לעילוי נשמת חיים ישראל פינחס בן משה אהרון</div>
-
+    <div className="yahrzeit container" onClick={() => navigate(Paths.Upload)}>
       <div className="jewish-week">
-        {dayTitle} {today['יום בשבוע']} פרשת {parsha}
+        {dayTitle} {today['יום בשבוע']} פרשת {parsha} - {today['תאריך']?.replace(" ה'", '')}
       </div>
-      <div className="jewish-date">{today['תאריך']?.replace(" ה'", '')}</div>
 
-      {today['ספירת העומר'] && (
-        <div className="omer">
-          <label>סה"ע</label>
-          <div>{today['ספירת העומר']}</div>
-        </div>
-      )}
+      <div className="name">
+        <div>הלימוד מוקדש לעילוי נשמת</div>
+        <div>חיים ישראל פינחס</div>
+        <div>בן משה אהרון</div>
+      </div>
 
       {daySection === DaySection.EarlyMorning ? (
         <EarlyMorning today={today} />

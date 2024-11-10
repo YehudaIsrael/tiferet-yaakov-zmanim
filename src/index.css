@@ -119,3 +119,45 @@ label {
 .upload-page button, .upload-page input {
   font-size: 100px;
 }
+
+/* Yahrzeit */
+
+.yahrzeit .jewish-week {
+  font-size: 80px;
+  line-height: 1;
+}
+
+.yahrzeit .name {
+  font-size: 200px;
+  margin: 50px 0;
+  line-height: 1;
+}
+
+.yahrzeit .name div:first-child {
+  font-size: 90px;
+}
+
+.yahrzeit .grid {
+  direction: rtl;
+  display: grid;
+  grid-template-areas:
+    'center center center'
+    'bottom-left bottom-center bottom-right';
+  grid-template-columns: 1fr 1.25fr 1fr;
+  justify-items: center;
+  align-items: center;
+}
+
+.yahrzeit .time-now {
+  font-size: 210px;
+  margin: initial;
+}
+
+.yahrzeit label {
+  font-size: 80px;
+}
+
+.yahrzeit .time {
+  font-size: 110px;
+  margin-top: -15px;
+}

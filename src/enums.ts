@@ -4,3 +4,9 @@ export enum DaySection {
     Afternoon,
     Night,
 }
+
+export enum Paths {
+    Home = '/',
+    Upload = '/upload',
+    Yahrzeit = '/yahrzeit'
+}

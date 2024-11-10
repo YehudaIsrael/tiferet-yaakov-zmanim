@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { getFormattedDate, getNextDay, testDate } from '../utils';
-import { DaySection } from '../enums';
+import { DaySection, Paths } from '../enums';
 import { Today } from '../types';
 
 dayjs.extend(customParseFormat);
@@ -17,11 +17,12 @@ export const useCalendar = () => {
   const [parsha, setParsha] = useState('');
   const calendarData = useRef([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const data = localStorage.getItem('calendar') || '';
     if (!data) {
-      navigate('/upload');
+      navigate(Paths.Upload);
     }
 
     calendarData.current = JSON.parse(data);
@@ -30,7 +31,7 @@ export const useCalendar = () => {
       return day['תאריך לועזי'] === date;
     });
 
-    if (!todayRow) return navigate('/upload');
+    if (!todayRow) return navigate(Paths.Upload);
 
     selectDaySection(todayRow);
     setTomorrowDate(todayRow);
@@ -65,7 +66,7 @@ export const useCalendar = () => {
     } else if (now > afternoon && now < night) {
       setDaySection(DaySection.Afternoon);
     } else {
-      setDaySection(DaySection.Night);
+      setDaySection(DaySection.Morning);
     }
   };
 
@@ -82,8 +83,18 @@ export const useCalendar = () => {
 
   const setTomorrowDate = (todayRow: Today) => {
     const newDay = getNextDay(todayRow);
+    checkYahrzeit(newDay || todayRow);
     setToday(newDay || todayRow);
     setDayTitle(newDay ? 'ליל ' : 'יום');
+  };
+
+  const checkYahrzeit = (todayRow: Today) => {
+    const yahrzeit = todayRow['תאריך'].includes('י"ב מרחשון');
+    if (location.pathname === Paths.Home && yahrzeit) {
+      navigate(Paths.Yahrzeit);
+    } else if (location.pathname === Paths.Yahrzeit && !yahrzeit) {
+      navigate(Paths.Home);
+    }
   };
 
   return { today, daySection, dayTitle, parsha };
