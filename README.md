@@ -18,3 +18,17 @@
 - `pm2 startup`
 - This will generate a command based on your system. Run the generated command to configure PM2 as a service
 - `pm2 save`
+
+
+## Error handling
+
+If get the following error:
+
+```
+[1] [129835:1112/205854.253064:FATAL:setuid_sandbox_host.cc(158)] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.
+```
+
+Run the following code:
+
+- `sudo chown root node_modules/electron/dist/chrome-sandbox`
+- `sudo chmod 4755 node_modules/electron/dist/chrome-sandbox`

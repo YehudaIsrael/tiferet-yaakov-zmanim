@@ -128,13 +128,14 @@ label {
 }
 
 .yahrzeit .name {
-  font-size: 200px;
-  margin: 50px 0;
+  font-size: 180px;
+  margin: 50px 0 40px;
   line-height: 1;
 }
 
 .yahrzeit .name div:first-child {
-  font-size: 90px;
+  font-size: 110px;
+  line-height: initial;
 }
 
 .yahrzeit .grid {

@@ -66,7 +66,7 @@ export const useCalendar = () => {
     } else if (now > afternoon && now < night) {
       setDaySection(DaySection.Afternoon);
     } else {
-      setDaySection(DaySection.Morning);
+      setDaySection(DaySection.Night);
     }
   };
 
