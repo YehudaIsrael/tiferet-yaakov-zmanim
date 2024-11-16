@@ -14,6 +14,9 @@ body,
   font-size: 50px;
   height: 100%;
   font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .container:after {
@@ -60,6 +63,7 @@ body,
   grid-template-columns: 1fr 1.25fr 1fr;
   justify-items: center;
   align-items: center;
+  margin-top: auto;
 }
 
 .top-left, .top-right {

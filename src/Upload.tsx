@@ -27,7 +27,7 @@ export default function Upload() {
         Choose a file
       </label>
       <input id="file" type="file" onChange={handleFileChange} />
-      <button onClick={() => navigate('/')}>Back</button>
+      <button onClick={() => navigate(-1)}>Back</button>
     </div>
   );
 }

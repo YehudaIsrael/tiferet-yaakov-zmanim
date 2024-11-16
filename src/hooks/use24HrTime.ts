@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const use24HrTime = () => {
   const convert24HrTime = (d: string) => {
     if (!d) return '';
@@ -11,5 +13,9 @@ export const use24HrTime = () => {
     return convert24HrTime(date);
   };
 
-  return { convert24HrTime, convertMiddayTime };
+  const convertFromUtcTime = (date: string) => {
+    return dayjs(date).format('H:mm:ss');
+  };
+
+  return { convert24HrTime, convertMiddayTime, convertFromUtcTime };
 };

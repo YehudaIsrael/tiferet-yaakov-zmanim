@@ -3,12 +3,17 @@ import Calendar from './Calendar';
 import Upload from './Upload';
 import Yahrzeit from './Yahrzeit';
 import { Paths } from './enums';
+import CalendarAPI from './CalendarAPI';
 
 export default function App() {
   const router = createBrowserRouter([
     {
       path: Paths.Home,
       element: <Calendar />,
+    },
+    {
+      path: Paths.CalendarAPI,
+      element: <CalendarAPI />,
     },
     {
       path: Paths.Upload,

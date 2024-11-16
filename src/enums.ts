@@ -7,6 +7,7 @@ export enum DaySection {
 
 export enum Paths {
     Home = '/',
+    CalendarAPI = '/calendarAPI',
     Upload = '/upload',
     Yahrzeit = '/yahrzeit'
 }

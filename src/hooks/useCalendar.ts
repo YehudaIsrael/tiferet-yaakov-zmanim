@@ -31,7 +31,7 @@ export const useCalendar = () => {
       return day['תאריך לועזי'] === date;
     });
 
-    if (!todayRow) return navigate(Paths.Upload);
+    if (!todayRow) return navigate(Paths.CalendarAPI);
 
     selectDaySection(todayRow);
     setTomorrowDate(todayRow);
