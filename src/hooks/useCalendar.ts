@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { getFormattedDate, getNextDay, testDate } from '../utils';
+import { getNextDay, testDate } from '../utils';
 import { DaySection, Paths } from '../enums';
 import type { Today } from '../types';
 
 dayjs.extend(customParseFormat);
+
+export const getFormattedDate = () => testDate().format('D.M.YYYY');
 
 export const useCalendar = () => {
   const dateNow = getFormattedDate();

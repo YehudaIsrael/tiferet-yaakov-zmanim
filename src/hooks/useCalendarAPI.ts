@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { testDate } from '../utils';
+import { initialTimes, testDate } from '../utils';
 import { DaySection } from '../enums';
+import { Times } from '../types';
 
 dayjs.extend(customParseFormat);
 
 export const useCalendarAPI = () => {
   const [hebrewDate, setHebrewDate] = useState('');
   const [parsha, setParsha] = useState('');
-  const [times, setTimes] = useState<any>(null);
-  const [timesElev, setTimesElev] = useState<any>(null);
+  const [times, setTimes] = useState<Times>(initialTimes);
+  const [timesElev, setTimesElev] = useState<Times>(initialTimes);
   const [daySection, setDaySection] = useState<DaySection>(DaySection.Morning);
 
   useEffect(() => {
@@ -40,6 +41,13 @@ export const useCalendarAPI = () => {
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (times.alotHaShachar && timesElev.alotHaShachar) {
+      selectDaySection()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [times, timesElev]);
 
   const fetchHebrewDate = () => {
     const date = testDate();

@@ -1,9 +1,7 @@
 import dayjs from 'dayjs';
-import type { Today } from './types';
+import type { Times, Today } from './types';
 
 export const testDate = () => dayjs(new Date());
-
-export const getFormattedDate = () => testDate().format('D.M.YYYY');
 
 export const getNextDay = (todayRow: Today) => {
   const data = localStorage.getItem('calendar') || '';
@@ -56,6 +54,37 @@ export const getNextDay = (todayRow: Today) => {
     return nextRow;
   }
   return;
+};
+
+export const initialTimes: Times = {
+  chatzotNight: '',
+  alotHaShachar: '',
+  misheyakir: '',
+  misheyakirMachmir: '',
+  dawn: '',
+  sunrise: '',
+  sofZmanShmaMGA19Point8: '',
+  sofZmanShmaMGA16Point1: '',
+  sofZmanShmaMGA: '',
+  sofZmanShma: '',
+  sofZmanTfillaMGA19Point8: '',
+  sofZmanTfillaMGA16Point1: '',
+  sofZmanTfillaMGA: '',
+  sofZmanTfilla: '',
+  chatzot: '',
+  minchaGedola: '',
+  minchaGedolaMGA: '',
+  minchaKetana: '',
+  minchaKetanaMGA: '',
+  plagHaMincha: '',
+  sunset: '',
+  beinHaShmashos: '',
+  dusk: '',
+  tzeit7083deg: '',
+  tzeit85deg: '',
+  tzeit42min: '',
+  tzeit50min: '',
+  tzeit72min: ''
 };
 
 export const dayMap: { [num: number]: string } = {
