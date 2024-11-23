@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { initialTimes, testDate } from '../utils';
@@ -10,9 +10,9 @@ dayjs.extend(customParseFormat);
 export const useCalendarAPI = () => {
   const [hebrewDate, setHebrewDate] = useState('');
   const [parsha, setParsha] = useState('');
-  const [times, setTimes] = useState<Times>(initialTimes);
-  const [timesElev, setTimesElev] = useState<Times>(initialTimes);
   const [daySection, setDaySection] = useState<DaySection>(DaySection.Morning);
+  const times = useRef<Times>(initialTimes);
+  const timesElev = useRef<Times>(initialTimes);
 
   useEffect(() => {
     const scheduleNextUpdate = () => {
@@ -41,13 +41,6 @@ export const useCalendarAPI = () => {
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (times.alotHaShachar && timesElev.alotHaShachar) {
-      selectDaySection()
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [times, timesElev]);
 
   const fetchHebrewDate = () => {
     const date = testDate();
@@ -78,7 +71,8 @@ export const useCalendarAPI = () => {
     fetch(url)
       .then(resp => resp.json())
       .then(res => {
-        setTimes(res.times);
+        times.current = res.times;
+        selectDaySection();
       })
       .catch(err => console.error(err));
   };
@@ -88,18 +82,19 @@ export const useCalendarAPI = () => {
     fetch(url)
       .then(resp => resp.json())
       .then(res => {
-        setTimesElev(res.times);
+        timesElev.current = res.times;
+        selectDaySection();
       })
       .catch(err => console.error(err));
   };
 
   const selectDaySection = () => {
     const now = testDate();
-    const beforeHaneitz = dayjs(times?.sunrise).subtract(3, 'hours');
-    const afterHaneitz = dayjs(times?.sunrise).add(30, 'minutes');
-    const afternoon = dayjs(times?.sofZmanTfilla).add(30, 'minutes');
-    const night = dayjs(timesElev?.sunset).add(20, 'minutes');
-    const rTam = dayjs(timesElev?.tzeit85deg).add(82, 'minutes');
+    const beforeHaneitz = dayjs(times.current.sunrise).subtract(3, 'hours');
+    const afterHaneitz = dayjs(times.current.sunrise).add(30, 'minutes');
+    const afternoon = dayjs(times.current.sofZmanTfilla).add(30, 'minutes');
+    const night = dayjs(timesElev.current.sunset).add(20, 'minutes');
+    const rTam = dayjs(timesElev.current.tzeit85deg).add(82, 'minutes');
 
     const isShabbat = now.day() === 6;
 
@@ -114,5 +109,5 @@ export const useCalendarAPI = () => {
     }
   };
 
-  return { hebrewDate, parsha, times, timesElev, daySection };
+  return { hebrewDate, parsha, times: times.current, timesElev: timesElev.current, daySection };
 };
