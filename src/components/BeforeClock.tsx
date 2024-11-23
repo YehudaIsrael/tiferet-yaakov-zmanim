@@ -1,43 +1,24 @@
 import { use24HrTime } from '../hooks/use24HrTime';
+import { useCalculateSpecialDays } from '../hooks';
+import type { ApiTimes } from '../types';
 
-export default function BeforeClock({ today }: any) {
-  const { convert24HrTime } = use24HrTime();
+export default function BeforeClock({ times, timesElev }: ApiTimes) {
+  const { checkForFriday, checkForShabbat } = useCalculateSpecialDays();
+  const { convertFromUtcTime } = use24HrTime();
 
   return (
     <div className="top-left">
-      {today['צאת שבת רגיל מקטגוריה'] ? (
+      {checkForFriday() && (
+        <>
+          <label>פלב המנחה</label>
+          <div className="time">{convertFromUtcTime(times?.plagHaMincha)}</div>
+        </>
+      )}
+      {checkForShabbat() && (
         <>
           <label>צאת שבת</label>
-          <div className="time">
-            {convert24HrTime(today['צאת שבת רגיל מקטגוריה']?.slice(0, -1))}
-          </div>
+          <div className="time">{convertFromUtcTime(timesElev?.tzeit85deg)}</div>
         </>
-      ) : today['צאת החג רגיל מקטגוריה'] ? (
-        <>
-          <label>צאת החג</label>
-          <div className="time">
-            {convert24HrTime(today['צאת החג רגיל מקטגוריה']?.slice(0, -1))}
-          </div>
-        </>
-      ) : today['הדלקת נרות קטגוריה'] ? (
-        <>
-          <label>הדלקת נרות</label>
-          <div className="time">{convert24HrTime(today['הדלקת נרות קטגוריה']?.slice(0, -1))}</div>
-        </>
-      ) : today['הדלקת נרות החג קטגוריה'] ? (
-        <>
-          <label>הדלקת נרות</label>
-          <div className="time">
-            {convert24HrTime(today['הדלקת נרות החג קטגוריה']?.slice(0, -1))}
-          </div>
-        </>
-      ) : today['צאת תשעה באב הנהוג'] ? (
-        <>
-          <label>צאת הצום</label>
-          <div className="time">{convert24HrTime(today['צאת תשעה באב הנהוג']?.slice(0, -1))}</div>
-        </>
-      ) : (
-        <div className="placeholder"></div>
       )}
     </div>
   );

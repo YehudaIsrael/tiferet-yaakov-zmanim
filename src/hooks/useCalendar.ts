@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { getFormattedDate, getNextDay, testDate } from '../utils';
 import { DaySection, Paths } from '../enums';
-import { Today } from '../types';
+import type { Today } from '../types';
 
 dayjs.extend(customParseFormat);
 

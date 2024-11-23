@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { testDate } from '../utils';
+import { DaySection } from '../enums';
 
 dayjs.extend(customParseFormat);
 
 export const useCalendarAPI = () => {
   const [hebrewDate, setHebrewDate] = useState('');
   const [parsha, setParsha] = useState('');
-  const [times, setTimes] = useState(null);
+  const [times, setTimes] = useState<any>(null);
+  const [timesElev, setTimesElev] = useState<any>(null);
+  const [daySection, setDaySection] = useState<DaySection>(DaySection.Morning);
 
   useEffect(() => {
     const scheduleNextUpdate = () => {
@@ -24,11 +27,18 @@ export const useCalendarAPI = () => {
     const initFunctions = () => {
       fetchHebrewDate();
       fetchParsha();
+      fetchZmanimTimes();
       fetchZmanimTimesElevation();
       scheduleNextUpdate();
     };
-
     initFunctions();
+
+    const interval = setInterval(() => {
+      selectDaySection();
+    }, 60000);
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchHebrewDate = () => {
@@ -55,16 +65,46 @@ export const useCalendarAPI = () => {
       .catch(err => console.error(err));
   };
 
-  const fetchZmanimTimesElevation = () => {
-    const url = 'https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&sec=1';
+  const fetchZmanimTimes = () => {
+    const url = 'https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&sec=1';
     fetch(url)
       .then(resp => resp.json())
       .then(res => {
-        console.log(res.times)
         setTimes(res.times);
       })
       .catch(err => console.error(err));
   };
 
-  return { hebrewDate, parsha, times };
+  const fetchZmanimTimesElevation = () => {
+    const url = 'https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&sec=1';
+    fetch(url)
+      .then(resp => resp.json())
+      .then(res => {
+        setTimesElev(res.times);
+      })
+      .catch(err => console.error(err));
+  };
+
+  const selectDaySection = () => {
+    const now = testDate();
+    const beforeHaneitz = dayjs(times?.sunrise).subtract(3, 'hours');
+    const afterHaneitz = dayjs(times?.sunrise).add(30, 'minutes');
+    const afternoon = dayjs(times?.sofZmanTfilla).add(30, 'minutes');
+    const night = dayjs(timesElev?.sunset).add(20, 'minutes');
+    const rTam = dayjs(timesElev?.tzeit85deg).add(82, 'minutes');
+
+    const isShabbat = now.day() === 6;
+
+    if (now > beforeHaneitz && now < afterHaneitz) {
+      setDaySection(DaySection.EarlyMorning);
+    } else if (now > afterHaneitz && now < afternoon) {
+      setDaySection(DaySection.Morning);
+    } else if (now > afternoon && (now < night || (isShabbat && now < rTam))) {
+      setDaySection(DaySection.Afternoon);
+    } else {
+      setDaySection(DaySection.Night);
+    }
+  };
+
+  return { hebrewDate, parsha, times, timesElev, daySection };
 };

@@ -1,25 +1,24 @@
-import { use24HrTime } from '../hooks/use24HrTime';
+import { useCalculateSpecialDays } from '../hooks';
+import type { ApiTimes } from '../types';
 
-export default function AfterClock({ today }: any) {
-  const { convert24HrTime } = use24HrTime();
-  const shabbatEndTime = convert24HrTime(today['צאת הכוכבים ר"ת 72 שוות קטגוריה']?.slice(0, -1));
-  const yomTovEndTime = convert24HrTime(today['צאת החג לר"ת מקטגוריה']?.slice(0, -1));
+export default function BeforeClock({ times, timesElev }: ApiTimes) {
+  const { checkForFriday, getCandleLightingTime, checkForShabbat, calculateRTam } =
+    useCalculateSpecialDays();
 
   return (
-    <>
-      {today['צאת הכוכבים ר"ת 72 שוות קטגוריה'] ? (
-        <div className="top-right">
-          <label>צאת שבת ר"ת</label>
-          <div className="time">{shabbatEndTime}</div>
-        </div>
-      ) : today['צאת החג לר"ת מקטגוריה'] ? (
-        <div className="top-right">
-          <label>צאת החג ר"ת</label>
-          <div className="time">{yomTovEndTime}</div>
-        </div>
-      ) : (
-        <div className="placeholder"></div>
+    <div className="top-right">
+      {checkForFriday() && (
+        <>
+          <label>הדלקת נרות</label>
+          <div className="time">{getCandleLightingTime(timesElev)}</div>
+        </>
       )}
-    </>
+      {checkForShabbat() && (
+        <>
+          <label>צאת שבת לר' תם</label>
+          <div className="time">{calculateRTam(timesElev)}</div>
+        </>
+      )}
+    </div>
   );
 }

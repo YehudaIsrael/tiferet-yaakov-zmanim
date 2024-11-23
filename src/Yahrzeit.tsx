@@ -3,17 +3,18 @@ import Afternoon from './components/Afternoon';
 import EarlyMorning from './components/EarlyMorning';
 import Morning from './components/Morning';
 import Night from './components/Night';
+import { useCalculateTimes, useCalendarAPI } from './hooks';
 import { DaySection, Paths } from './enums';
-import { useCalendar } from './hooks/useCalendar';
 
 export default function Yahrzeit() {
   const navigate = useNavigate();
-  const { today, parsha, daySection, dayTitle } = useCalendar();
+  const { hebrewDate, parsha, times, timesElev, daySection } = useCalendarAPI();
+  const { getDayTitle } = useCalculateTimes();
 
   return (
     <div className="yahrzeit container" onClick={() => navigate(Paths.Upload)}>
       <div className="jewish-week">
-        {dayTitle} {today['יום בשבוע']} פרשת {parsha} - {today['תאריך']?.replace(" ה'", '')}
+        {getDayTitle(daySection)} פרשת {parsha}
       </div>
 
       <div className="name">
@@ -23,13 +24,13 @@ export default function Yahrzeit() {
       </div>
 
       {daySection === DaySection.EarlyMorning ? (
-        <EarlyMorning today={today} />
+        <EarlyMorning times={times} timesElev={timesElev} />
       ) : daySection === DaySection.Morning ? (
-        <Morning today={today} />
+        <Morning times={times} timesElev={timesElev} />
       ) : daySection === DaySection.Afternoon ? (
-        <Afternoon today={today} />
+        <Afternoon times={times} timesElev={timesElev} />
       ) : (
-        <Night today={today} />
+        <Night times={times} timesElev={timesElev} />
       )}
     </div>
   );

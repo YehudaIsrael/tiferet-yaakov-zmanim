@@ -1,39 +1,38 @@
-import { useNavigate } from 'react-router-dom';
-import Afternoon from './components/Afternoon';
+import { useCalculateTimes, useCalendarAPI } from './hooks';
+import { DaySection } from './enums';
 import EarlyMorning from './components/EarlyMorning';
-import Morning from './components/Morning';
+import Morning from './components/EarlyMorning';
+import Afternoon from './components/Afternoon';
 import Night from './components/Night';
-import { DaySection, Paths } from './enums';
-import { useCalendar } from './hooks/useCalendar';
 
 export default function Calendar() {
-  const navigate = useNavigate();
-  const { today, parsha, daySection, dayTitle } = useCalendar();
+  const { hebrewDate, parsha, times, timesElev, daySection } = useCalendarAPI();
+  const { getDayTitle } = useCalculateTimes();
 
   return (
-    <div className="container" onClick={() => navigate(Paths.Upload)}>
+    <div className="container">
       <div className="name">לעילוי נשמת חיים ישראל פינחס בן משה אהרון</div>
 
       <div className="jewish-week">
-        {dayTitle} {today['יום בשבוע']} פרשת {parsha}
+        {getDayTitle(daySection)} פרשת {parsha}
       </div>
-      <div className="jewish-date">{today['תאריך']?.replace(" ה'", '')}</div>
+      <div className="jewish-date">{hebrewDate}</div>
 
-      {today['ספירת העומר'] && (
+      {/* {today['ספירת העומר'] && (
         <div className="omer">
           <label>סה"ע</label>
           <div>{today['ספירת העומר']}</div>
         </div>
-      )}
+      )} */}
 
       {daySection === DaySection.EarlyMorning ? (
-        <EarlyMorning today={today} />
+        <EarlyMorning times={times} timesElev={timesElev} />
       ) : daySection === DaySection.Morning ? (
-        <Morning today={today} />
+        <Morning times={times} timesElev={timesElev} />
       ) : daySection === DaySection.Afternoon ? (
-        <Afternoon today={today} />
+        <Afternoon times={times} timesElev={timesElev} />
       ) : (
-        <Night today={today} />
+        <Night times={times} timesElev={timesElev} />
       )}
     </div>
   );

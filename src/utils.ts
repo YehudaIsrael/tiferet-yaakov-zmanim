@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Today } from './types';
+import type { Today } from './types';
 
 export const testDate = () => dayjs(new Date());
 
@@ -56,4 +56,14 @@ export const getNextDay = (todayRow: Today) => {
     return nextRow;
   }
   return;
+};
+
+export const dayMap: { [num: number]: string } = {
+  0: 'ראשון',
+  1: 'שני',
+  2: 'שלישי',
+  3: 'רביעי',
+  4: 'חמישי',
+  5: 'שישי',
+  6: 'שבת',
 };

@@ -1,30 +1,27 @@
-import { Today } from '../types';
-import AfterClock from './AfterClock';
-import BeforeClock from './BeforeClock';
+import { use24HrTime } from '../hooks';
 import Time from './Time';
+import { ApiTimes } from '../types';
 
-export default function Morning({ today }: Today) {
+export default function Morning({ times, timesElev }: ApiTimes) {
+  const { convertFromUtcTime } = use24HrTime();
+
   return (
     <div className="grid">
-      <BeforeClock today={today} />
-
       <Time />
 
-      <AfterClock today={today} />
-
       <div className="bottom-left">
-        <label>הנץ החמה</label>
-        <div className="time">{today['נץ החמה קטגוריה']}</div>
+        <label>עלות השחר</label>
+        <div className="time">{convertFromUtcTime(times?.alotHaShachar)}</div>
       </div>
 
       <div className="bottom-center">
-        <label>סו"ז ק"ש גר"א</label>
-        <div className="time">{today['סו"ז ק"ש גר"א קטגוריה']?.slice(0, -1)}</div>
+        <label>משיכיר</label>
+        <div className="time">{convertFromUtcTime(times?.misheyakir)}</div>
       </div>
 
       <div className="bottom-right">
-        <label>סו"ז תפילה גר"א</label>
-        <div className="time">{today['סו"ז תפילה גר"א קטגוריה']?.slice(0, -1)}</div>
+        <label>הנץ החמה</label>
+        <div className="time">{convertFromUtcTime(times?.sunrise)}</div>
       </div>
     </div>
   );

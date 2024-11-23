@@ -1,33 +1,34 @@
-import { Today } from '../types';
 import AfterClock from './AfterClock';
 import BeforeClock from './BeforeClock';
 import Time from './Time';
-import { use24HrTime } from '../hooks/use24HrTime';
+import { use24HrTime, useCalculateTimes } from '../hooks';
+import type { ApiTimes } from '../types';
 
-export default function Afternoon({ today }: Today) {
-  const { convert24HrTime, convertMiddayTime } = use24HrTime();
+export default function Afternoon({ times, timesElev }: ApiTimes) {
+  const { convertFromUtcTime } = use24HrTime();
+  const { getMinchaGedolah } = useCalculateTimes();
 
   return (
     <div className="grid">
-      <BeforeClock today={today} />
+      <BeforeClock times={times} timesElev={timesElev} />
 
-      <AfterClock today={today} />
+      <AfterClock times={times} timesElev={timesElev} />
 
       <Time />
 
       <div className="bottom-left">
         <label>חצות</label>
-        <div className="time">{convertMiddayTime(today['חצות יום ולילה']?.slice(0, -1))}</div>
+        <div className="time">{convertFromUtcTime(times?.chatzot)}</div>
       </div>
 
       <div className="bottom-center">
         <label>מנחה גדולה</label>
-        <div className="time">{convertMiddayTime(today['מנחה גדולה המאוחר']?.slice(0, -1))}</div>
+        <div className="time">{getMinchaGedolah(times)}</div>
       </div>
 
       <div className="bottom-right">
         <label>שקיעה</label>
-        <div className="time">{convert24HrTime(today['שקיעה קטגוריה'])}</div>
+        <div className="time">{convertFromUtcTime(timesElev?.sunset)}</div>
       </div>
     </div>
   );
