@@ -1,7 +1,7 @@
 import { useCalculateTimes, useCalendarAPI } from './hooks';
 import { DaySection } from './enums';
 import EarlyMorning from './components/EarlyMorning';
-import Morning from './components/EarlyMorning';
+import Morning from './components/Morning';
 import Afternoon from './components/Afternoon';
 import Night from './components/Night';
 
