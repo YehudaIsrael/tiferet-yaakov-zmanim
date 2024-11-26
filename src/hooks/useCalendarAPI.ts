@@ -42,50 +42,49 @@ export const useCalendarAPI = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchHebrewDate = () => {
+  const fetchAPI = async (url: string) => {
+    try {
+      const resp = await fetch(url);
+      return resp.json();
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+
+  const fetchHebrewDate = (isNight?: boolean) => {
     const date = testDate();
     const formatted = date.format('YYYY-MM-DD');
-    const url = `https://www.hebcal.com/converter?cfg=json&date=${formatted}&g2h=1&gs=on&strict=1`;
-    fetch(url)
-      .then(resp => resp.json())
-      .then(res => {
-        const { heDateParts } = res;
-        setHebrewDate(`${heDateParts.d} ${heDateParts.m} ${heDateParts.y}`);
-      })
-      .catch(err => console.error(err));
+    const gs = isNight ? 'on' : 'off';
+    const url = `https://www.hebcal.com/converter?cfg=json&date=${formatted}&g2h=1&gs=${gs}&strict=1`;
+    fetchAPI(url).then(res => {
+      const { heDateParts } = res;
+      setHebrewDate(`${heDateParts.d} ${heDateParts.m} ${heDateParts.y}`);
+    });
   };
 
   const fetchParsha = () => {
     const url =
       'https://www.sefaria.org/api/calendars?diaspora=0&timezone=Asia/Jerusalem&custom=ashkenazi';
-    fetch(url)
-      .then(resp => resp.json())
-      .then(res => {
-        setParsha(res.calendar_items[0].displayValue.he);
-      })
-      .catch(err => console.error(err));
+    fetchAPI(url).then(res => {
+      setParsha(res.calendar_items[0].displayValue.he);
+    });
   };
 
   const fetchZmanimTimes = () => {
     const url = 'https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&sec=1';
-    fetch(url)
-      .then(resp => resp.json())
-      .then(res => {
-        times.current = res.times;
-        selectDaySection();
-      })
-      .catch(err => console.error(err));
+    fetchAPI(url).then(res => {
+      times.current = res.times;
+      selectDaySection();
+    });
   };
 
   const fetchZmanimTimesElevation = () => {
     const url = 'https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&sec=1';
-    fetch(url)
-      .then(resp => resp.json())
-      .then(res => {
-        timesElev.current = res.times;
-        selectDaySection();
-      })
-      .catch(err => console.error(err));
+    fetchAPI(url).then(res => {
+      timesElev.current = res.times;
+      selectDaySection();
+    });
   };
 
   const selectDaySection = () => {
@@ -105,6 +104,7 @@ export const useCalendarAPI = () => {
     } else if (now > afternoon && (now < night || (isShabbat && now < rTam))) {
       setDaySection(DaySection.Afternoon);
     } else {
+      fetchHebrewDate(true);
       setDaySection(DaySection.Night);
     }
   };
