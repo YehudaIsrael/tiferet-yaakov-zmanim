@@ -45,7 +45,10 @@
     "publish": null,
     "appId": "com.example.electron-cra",
     "linux": {
-      "target": ["AppImage", "deb"]
+      "target": [
+        "AppImage",
+        "deb"
+      ]
     },
     "files": [
       "build/**/*",

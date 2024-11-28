@@ -37,3 +37,11 @@ export type ApiTimes = {
   times: Times;
   timesElev: Times;
 };
+
+export type TimeEntry = {
+  [key: string]: string;
+};
+
+export type GroupedData = {
+  [date: string]: TimeEntry;
+};

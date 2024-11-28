@@ -34,6 +34,11 @@ export default function Calendar() {
       ) : (
         <Night times={times} timesElev={timesElev} />
       )}
+
+      <div className='license'>
+        Jewish holidays and candle-lighting times are provided by Hebcal.com with a CC BY 4.0
+        International License.
+      </div>
     </div>
   );
 }

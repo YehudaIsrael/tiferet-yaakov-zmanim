@@ -3,18 +3,21 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { initialTimes, testDate } from '../utils';
 import { DaySection } from '../enums';
-import { Times } from '../types';
+import { GroupedData, TimeEntry, Times } from '../types';
 
 dayjs.extend(customParseFormat);
+
+export const getFormattedDate = () => testDate().format('YYYY-MM-DD');
 
 export const useCalendarAPI = () => {
   const [hebrewDate, setHebrewDate] = useState('');
   const [parsha, setParsha] = useState('');
-  const [daySection, setDaySection] = useState<DaySection>(DaySection.Morning);
+  const [daySection, setDaySection] = useState<DaySection>(DaySection.Night);
   const times = useRef<Times>(initialTimes);
   const timesElev = useRef<Times>(initialTimes);
 
   useEffect(() => {
+    const formattedToday = getFormattedDate();
     const scheduleNextUpdate = () => {
       const now = dayjs();
       const midnight = dayjs().endOf('day').add(1, 'millisecond');
@@ -25,17 +28,28 @@ export const useCalendarAPI = () => {
       }, timeToMidnight);
     };
 
+    const { calendar, timeOfYear, timeOfYearElev } = getFromLocalStorage();
+    if (!calendar || !timeOfYear || !timeOfYearElev) {
+      getYearTimes();
+      return;
+    }
+
+    const setToday = () => {
+      times.current = JSON.parse(timeOfYear)[formattedToday];
+      timesElev.current = JSON.parse(timeOfYearElev)[formattedToday];
+    };
+
     const initFunctions = () => {
       fetchHebrewDate();
       fetchParsha();
-      fetchZmanimTimes();
-      fetchZmanimTimesElevation();
+      setToday();
       scheduleNextUpdate();
     };
     initFunctions();
 
     const interval = setInterval(() => {
       selectDaySection();
+      setToday()
     }, 60000);
 
     return () => clearInterval(interval);
@@ -50,6 +64,60 @@ export const useCalendarAPI = () => {
       console.error(err);
       throw err;
     }
+  };
+
+  const getFromLocalStorage = () => {
+    return {
+      timeOfYear: localStorage.getItem('timeOfYear'),
+      timeOfYearElev: localStorage.getItem('timeOfYearElev'),
+      calendar: localStorage.getItem('calendar'),
+    };
+  };
+
+  const getYearTimes = async () => {
+    const year = new Date().getFullYear();
+    const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-07-13`;
+    const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-07-14&end=${year}-12-31`;
+    const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-07-13`;
+    const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-07-14&end=${year}-12-31`;
+    const calendarUrl =
+      'https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=2024&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on';
+
+    const urls = [timesUrl1, timesUrl2, timesElevUrl1, timesElevUrl2, calendarUrl];
+
+    const responses = await Promise.all(urls.map(url => fetch(url)));
+    const data = await Promise.all(responses.map(response => response.json()));
+    const [times1, times2, timesElev1, timesElev2, calendar] = data;
+
+    const timeOfYear = groupByDate(times1.times, times2.times);
+    const timeOfYearElev = groupByDate(timesElev1.times, timesElev2.times);
+    console.log(timeOfYear, timeOfYearElev);
+
+    localStorage.setItem('timeOfYear', JSON.stringify(timeOfYear));
+    localStorage.setItem('timeOfYearElev', JSON.stringify(timeOfYearElev));
+    localStorage.setItem('calendar', JSON.stringify(calendar));
+  };
+
+  const groupByDate = (...times: { [key: string]: TimeEntry }[]): GroupedData => {
+    const result: GroupedData = {};
+
+    times.forEach(source => {
+      for (const key in source) {
+        if (source.hasOwnProperty(key)) {
+          const entries = source[key];
+
+          for (const entryKey in entries) {
+            if (entries.hasOwnProperty(entryKey)) {
+              if (!result[entryKey]) {
+                result[entryKey] = {};
+              }
+              result[entryKey][key] = entries[entryKey];
+            }
+          }
+        }
+      }
+    });
+    return result;
   };
 
   const fetchHebrewDate = (isNight?: boolean) => {
@@ -68,22 +136,6 @@ export const useCalendarAPI = () => {
       'https://www.sefaria.org/api/calendars?diaspora=0&timezone=Asia/Jerusalem&custom=ashkenazi';
     fetchAPI(url).then(res => {
       setParsha(res.calendar_items[0].displayValue.he);
-    });
-  };
-
-  const fetchZmanimTimes = () => {
-    const url = 'https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&sec=1';
-    fetchAPI(url).then(res => {
-      times.current = res.times;
-      selectDaySection();
-    });
-  };
-
-  const fetchZmanimTimesElevation = () => {
-    const url = 'https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&sec=1';
-    fetchAPI(url).then(res => {
-      timesElev.current = res.times;
-      selectDaySection();
     });
   };
 

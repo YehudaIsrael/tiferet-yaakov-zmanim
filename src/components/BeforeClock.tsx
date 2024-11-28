@@ -8,17 +8,18 @@ export default function BeforeClock({ times, timesElev }: ApiTimes) {
 
   return (
     <div className="top-left">
-      {checkForFriday() && (
+      {checkForFriday() ? (
         <>
           <label>פלב המנחה</label>
           <div className="time">{convertFromUtcTime(times?.plagHaMincha)}</div>
         </>
-      )}
-      {checkForShabbat() && (
+      ) : checkForShabbat() ? (
         <>
           <label>צאת שבת</label>
           <div className="time">{convertFromUtcTime(timesElev?.tzeit85deg)}</div>
         </>
+      ) : (
+        <div className="placeholder"></div>
       )}
     </div>
   );

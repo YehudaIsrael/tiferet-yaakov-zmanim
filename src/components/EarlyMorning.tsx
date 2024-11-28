@@ -7,6 +7,7 @@ export default function Morning({ times, timesElev }: ApiTimes) {
 
   return (
     <div className="grid">
+      <div className="placeholder"></div>
       <Time />
 
       <div className="bottom-left">

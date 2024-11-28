@@ -7,17 +7,18 @@ export default function BeforeClock({ times, timesElev }: ApiTimes) {
 
   return (
     <div className="top-right">
-      {checkForFriday() && (
+      {checkForFriday() ? (
         <>
           <label>הדלקת נרות</label>
           <div className="time">{getCandleLightingTime(timesElev)}</div>
         </>
-      )}
-      {checkForShabbat() && (
+      ) : checkForShabbat() ? (
         <>
           <label>צאת שבת לר' תם</label>
           <div className="time">{calculateRTam(timesElev)}</div>
         </>
+      ) : (
+        <div className="placeholder"></div>
       )}
     </div>
   );
