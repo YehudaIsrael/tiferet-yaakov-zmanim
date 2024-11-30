@@ -17,7 +17,6 @@ export const useCalendarAPI = () => {
   const timesElev = useRef<Times>(initialTimes);
 
   useEffect(() => {
-    const formattedToday = getFormattedDate();
     const scheduleNextUpdate = () => {
       const now = dayjs();
       const midnight = dayjs().endOf('day').add(1, 'millisecond');
@@ -28,13 +27,18 @@ export const useCalendarAPI = () => {
       }, timeToMidnight);
     };
 
-    const { calendar, timeOfYear, timeOfYearElev } = getFromLocalStorage();
-    if (!calendar || !timeOfYear || !timeOfYearElev) {
-      getYearTimes();
-      return;
-    }
+    const interval = setInterval(() => {
+      setToday();
+      selectDaySection();
+    }, 60000);
 
     const setToday = () => {
+      const { calendar, timeOfYear, timeOfYearElev } = getFromLocalStorage();
+      if (!calendar || !timeOfYear || !timeOfYearElev) {
+        getYearTimes().then(() => initFunctions());
+        return;
+      }
+      const formattedToday = getFormattedDate();
       times.current = JSON.parse(timeOfYear)[formattedToday];
       timesElev.current = JSON.parse(timeOfYearElev)[formattedToday];
     };
@@ -43,14 +47,10 @@ export const useCalendarAPI = () => {
       fetchHebrewDate();
       fetchParsha();
       setToday();
+      selectDaySection();
       scheduleNextUpdate();
     };
     initFunctions();
-
-    const interval = setInterval(() => {
-      selectDaySection();
-      setToday()
-    }, 60000);
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,19 +67,20 @@ export const useCalendarAPI = () => {
   };
 
   const getFromLocalStorage = () => {
+    const year = new Date().getFullYear();
     return {
-      timeOfYear: localStorage.getItem('timeOfYear'),
-      timeOfYearElev: localStorage.getItem('timeOfYearElev'),
+      timeOfYear: localStorage.getItem(`timeOfYear-${year}`),
+      timeOfYearElev: localStorage.getItem(`timeOfYearElev-${year}`),
       calendar: localStorage.getItem('calendar'),
     };
   };
 
   const getYearTimes = async () => {
     const year = new Date().getFullYear();
-    const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-07-13`;
-    const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-07-14&end=${year}-12-31`;
-    const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-07-13`;
-    const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-07-14&end=${year}-12-31`;
+    const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-07-13&sec=1`;
+    const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-07-14&end=${year}-12-31&sec=1`;
+    const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-07-13&sec=1`;
+    const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-07-14&end=${year}-12-31&sec=1`;
     const calendarUrl =
       'https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=2024&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on';
 
@@ -93,8 +94,8 @@ export const useCalendarAPI = () => {
     const timeOfYearElev = groupByDate(timesElev1.times, timesElev2.times);
     console.log(timeOfYear, timeOfYearElev);
 
-    localStorage.setItem('timeOfYear', JSON.stringify(timeOfYear));
-    localStorage.setItem('timeOfYearElev', JSON.stringify(timeOfYearElev));
+    localStorage.setItem(`timeOfYear-${year}`, JSON.stringify(timeOfYear));
+    localStorage.setItem(`timeOfYearElev-${year}`, JSON.stringify(timeOfYearElev));
     localStorage.setItem('calendar', JSON.stringify(calendar));
   };
 
@@ -141,6 +142,7 @@ export const useCalendarAPI = () => {
 
   const selectDaySection = () => {
     const now = testDate();
+    const midnight = dayjs().startOf('day').subtract(2, 'minutes');
     const beforeHaneitz = dayjs(times.current.sunrise).subtract(3, 'hours');
     const afterHaneitz = dayjs(times.current.sunrise).add(30, 'minutes');
     const afternoon = dayjs(times.current.sofZmanTfilla).add(30, 'minutes');
@@ -149,7 +151,9 @@ export const useCalendarAPI = () => {
 
     const isShabbat = now.day() === 6;
 
-    if (now > beforeHaneitz && now < afterHaneitz) {
+    if (now > midnight && now < beforeHaneitz) {
+      setDaySection(DaySection.Night);
+    } else if (now > beforeHaneitz && now < afterHaneitz) {
       setDaySection(DaySection.EarlyMorning);
     } else if (now > afterHaneitz && now < afternoon) {
       setDaySection(DaySection.Morning);

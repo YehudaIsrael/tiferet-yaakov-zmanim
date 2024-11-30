@@ -10,7 +10,7 @@ export default function BeforeClock({ times, timesElev }: ApiTimes) {
     <div className="top-left">
       {checkForFriday() ? (
         <>
-          <label>פלב המנחה</label>
+          <label>פלג המנחה</label>
           <div className="time">{convertFromUtcTime(times?.plagHaMincha)}</div>
         </>
       ) : checkForShabbat() ? (
