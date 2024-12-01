@@ -3,7 +3,7 @@ import { useCalculateSpecialDays } from '../hooks';
 import type { ApiTimes } from '../types';
 
 export default function BeforeClock({ times, timesElev }: ApiTimes) {
-  const { checkForFriday, checkForShabbat } = useCalculateSpecialDays();
+  const { checkForFriday, checkForShabbat, calculateEndShabbat } = useCalculateSpecialDays();
   const { convertFromUtcTime } = use24HrTime();
 
   return (
@@ -16,7 +16,7 @@ export default function BeforeClock({ times, timesElev }: ApiTimes) {
       ) : checkForShabbat() ? (
         <>
           <label>צאת שבת</label>
-          <div className="time">{convertFromUtcTime(timesElev?.tzeit85deg)}</div>
+          <div className="time">{calculateEndShabbat(timesElev)}</div>
         </>
       ) : (
         <div className="placeholder"></div>

@@ -147,7 +147,7 @@ export const useCalendarAPI = () => {
     const afterHaneitz = dayjs(times.current.sunrise).add(30, 'minutes');
     const afternoon = dayjs(times.current.sofZmanTfilla).add(30, 'minutes');
     const night = dayjs(timesElev.current.sunset).add(20, 'minutes');
-    const rTam = dayjs(timesElev.current.tzeit85deg).add(82, 'minutes');
+    const rTam = dayjs(timesElev.current.sunset).add(82, 'minutes');
 
     const isShabbat = now.day() === 6;
 

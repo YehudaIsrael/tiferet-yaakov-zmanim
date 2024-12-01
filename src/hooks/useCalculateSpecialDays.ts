@@ -13,10 +13,21 @@ export const useCalculateSpecialDays = () => {
 
   const checkForShabbat = () => testDate().day() === 6;
 
-  const calculateRTam = (timesElev: Times) => {
-    const rTam = dayjs(timesElev?.tzeit85deg).add(72, 'minutes');
+  const calculateEndShabbat = (timesElev: Times) => {
+    const rTam = dayjs(timesElev?.tzeit85deg).add(3, 'minutes');
     return rTam.format('HH:mm');
   };
 
-  return { checkForFriday, getCandleLightingTime, checkForShabbat, calculateRTam };
+  const calculateRTam = (timesElev: Times) => {
+    const rTam = dayjs(timesElev?.sunset).add(72, 'minutes');
+    return rTam.format('HH:mm');
+  };
+
+  return {
+    checkForFriday,
+    getCandleLightingTime,
+    checkForShabbat,
+    calculateEndShabbat,
+    calculateRTam,
+  };
 };
