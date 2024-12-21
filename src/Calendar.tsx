@@ -14,7 +14,7 @@ export default function Calendar() {
       <div className="name">לעילוי נשמת חיים ישראל פינחס בן משה אהרון</div>
 
       <div className="jewish-week">
-        {getDayTitle(daySection)} פרשת {parsha}
+        {getDayTitle(daySection)} {parsha}
       </div>
       <div className="jewish-date">{hebrewDate}</div>
 

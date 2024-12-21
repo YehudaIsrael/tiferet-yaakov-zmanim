@@ -1,3 +1,5 @@
+import { CalendarCategory } from "./enums";
+
 export type Today = {
   [key: string]: any;
 };
@@ -44,4 +46,17 @@ export type TimeEntry = {
 
 export type GroupedData = {
   [date: string]: TimeEntry;
+};
+
+export type CalendarDate = {
+  category: CalendarCategory;
+  date: string;
+  hdate: string;
+  hebrew: string;
+  title: string;
+  heDateParts?: {
+    d: string;
+    m: string;
+    y: string;
+  };
 };

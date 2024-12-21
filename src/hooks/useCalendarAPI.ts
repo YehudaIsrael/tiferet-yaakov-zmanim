@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { useCalculateSpecialDays } from './useCalculateSpecialDays';
 import { initialTimes, testDate } from '../utils';
-import { DaySection } from '../enums';
-import { GroupedData, TimeEntry, Times } from '../types';
+import { CalendarCategory, DaySection } from '../enums';
+import type { CalendarDate, GroupedData, TimeEntry, Times } from '../types';
 
 dayjs.extend(customParseFormat);
 
@@ -13,6 +14,7 @@ export const useCalendarAPI = () => {
   const [hebrewDate, setHebrewDate] = useState('');
   const [parsha, setParsha] = useState('');
   const [daySection, setDaySection] = useState<DaySection>(DaySection.Night);
+  const { checkForShabbat } = useCalculateSpecialDays();
   const times = useRef<Times>(initialTimes);
   const timesElev = useRef<Times>(initialTimes);
 
@@ -33,8 +35,8 @@ export const useCalendarAPI = () => {
     }, 60000);
 
     const setToday = () => {
-      const { calendar, timeOfYear, timeOfYearElev } = getFromLocalStorage();
-      if (!calendar || !timeOfYear || !timeOfYearElev) {
+      const { timeOfYear, timeOfYearElev } = getFromLocalStorage();
+      if (!timeOfYear || !timeOfYearElev) {
         getYearTimes().then(() => initFunctions());
         return;
       }
@@ -44,8 +46,8 @@ export const useCalendarAPI = () => {
     };
 
     const initFunctions = () => {
-      fetchHebrewDate();
-      fetchParsha();
+      getHebrewDate();
+      getParsha();
       setToday();
       selectDaySection();
       scheduleNextUpdate();
@@ -55,16 +57,6 @@ export const useCalendarAPI = () => {
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const fetchAPI = async (url: string) => {
-    try {
-      const resp = await fetch(url);
-      return resp.json();
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  };
 
   const getFromLocalStorage = () => {
     const year = new Date().getFullYear();
@@ -121,23 +113,39 @@ export const useCalendarAPI = () => {
     return result;
   };
 
-  const fetchHebrewDate = (isNight?: boolean) => {
-    const date = testDate();
-    const formatted = date.format('YYYY-MM-DD');
-    const gs = isNight ? 'on' : 'off';
-    const url = `https://www.hebcal.com/converter?cfg=json&date=${formatted}&g2h=1&gs=${gs}&strict=1`;
-    fetchAPI(url).then(res => {
-      const { heDateParts } = res;
-      setHebrewDate(`${heDateParts.d} ${heDateParts.m} ${heDateParts.y}`);
-    });
+  const checkCalendar = (func: Function) => {
+    const { calendar } = getFromLocalStorage();
+    if (!calendar) {
+      getYearTimes().then(() => func());
+      return null;
+    }
+    return JSON.parse(calendar).items;
   };
 
-  const fetchParsha = () => {
-    const url =
-      'https://www.sefaria.org/api/calendars?diaspora=0&timezone=Asia/Jerusalem&custom=ashkenazi';
-    fetchAPI(url).then(res => {
-      setParsha(res.calendar_items[0].displayValue.he);
-    });
+  const getHebrewDate = (isNight?: boolean) => {
+    const calendar = checkCalendar(getParsha);
+    if (!calendar) return;
+    const date = testDate();
+    const formatted = date.add(isNight ? 1 : 0, 'day').format('YYYY-MM-DD');
+    const { heDateParts } = calendar.find(
+      (day: CalendarDate) => day.date === formatted && day.category === CalendarCategory.hebdate
+    );
+    setHebrewDate(`${heDateParts.d} ${heDateParts.m} ${heDateParts.y}`);
+  };
+
+  const getParsha = (isMotzeiShabbat?: boolean) => {
+    const calendar = checkCalendar(getParsha);
+    if (!calendar) return;
+    const date = testDate();
+    const formatted = date
+      .add(isMotzeiShabbat ? 1 : 0, 'week')
+      .startOf('week')
+      .add(6, 'day')
+      .format('YYYY-MM-DD');
+    const parsha = calendar.find(
+      (day: CalendarDate) => day.date === formatted && day.category === CalendarCategory.parashat
+    );
+    setParsha(parsha.hebrew);
   };
 
   const selectDaySection = () => {
@@ -160,7 +168,8 @@ export const useCalendarAPI = () => {
     } else if (now > afternoon && (now < night || (isShabbat && now < rTam))) {
       setDaySection(DaySection.Afternoon);
     } else {
-      fetchHebrewDate(true);
+      getHebrewDate(true);
+      getParsha(checkForShabbat());
       setDaySection(DaySection.Night);
     }
   };

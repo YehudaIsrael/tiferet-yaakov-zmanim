@@ -1,3 +1,5 @@
+import BeforeClock from './AfterClock';
+import AfterClock from './AfterClock';
 import Time from './Time';
 import { use24HrTime } from '../hooks';
 import type { ApiTimes } from '../types';
@@ -7,7 +9,9 @@ export default function Morning({ times, timesElev }: ApiTimes) {
 
   return (
     <div className="grid">
-      <div className="placeholder"></div>
+      <BeforeClock times={times} timesElev={timesElev} />
+
+      <AfterClock times={times} timesElev={timesElev} />
 
       <Time />
 
