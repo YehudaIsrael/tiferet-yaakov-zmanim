@@ -69,26 +69,26 @@ export const useCalendarAPI = () => {
 
   const getYearTimes = async () => {
     const year = new Date().getFullYear();
+    const nextYear = year + 1;
     const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-07-13&sec=1`;
     const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-07-14&end=${year}-12-31&sec=1`;
     const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-07-13&sec=1`;
     const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-07-14&end=${year}-12-31&sec=1`;
-    const calendarUrl =
-      'https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=2024&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on';
+    const calendarUrl = `https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=${year}&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on`;
+    const calendarNextUrl = `https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=${nextYear}&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on`;
 
-    const urls = [timesUrl1, timesUrl2, timesElevUrl1, timesElevUrl2, calendarUrl];
+    const urls = [timesUrl1, timesUrl2, timesElevUrl1, timesElevUrl2, calendarUrl, calendarNextUrl];
 
     const responses = await Promise.all(urls.map(url => fetch(url)));
     const data = await Promise.all(responses.map(response => response.json()));
-    const [times1, times2, timesElev1, timesElev2, calendar] = data;
+    const [times1, times2, timesElev1, timesElev2, calendar, calendarNext] = data;
 
     const timeOfYear = groupByDate(times1.times, times2.times);
     const timeOfYearElev = groupByDate(timesElev1.times, timesElev2.times);
-    console.log(timeOfYear, timeOfYearElev);
 
     localStorage.setItem(`timeOfYear-${year}`, JSON.stringify(timeOfYear));
     localStorage.setItem(`timeOfYearElev-${year}`, JSON.stringify(timeOfYearElev));
-    localStorage.setItem('calendar', JSON.stringify(calendar));
+    localStorage.setItem('calendar', JSON.stringify([...calendar.items, ...calendarNext.items]));
   };
 
   const groupByDate = (...times: { [key: string]: TimeEntry }[]): GroupedData => {
@@ -98,7 +98,6 @@ export const useCalendarAPI = () => {
       for (const key in source) {
         if (source.hasOwnProperty(key)) {
           const entries = source[key];
-
           for (const entryKey in entries) {
             if (entries.hasOwnProperty(entryKey)) {
               if (!result[entryKey]) {
@@ -119,7 +118,7 @@ export const useCalendarAPI = () => {
       getYearTimes().then(() => func());
       return null;
     }
-    return JSON.parse(calendar).items;
+    return JSON.parse(calendar);
   };
 
   const getHebrewDate = (isNight?: boolean) => {
