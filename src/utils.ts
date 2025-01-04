@@ -84,7 +84,7 @@ export const initialTimes: Times = {
   tzeit85deg: '',
   tzeit42min: '',
   tzeit50min: '',
-  tzeit72min: ''
+  tzeit72min: '',
 };
 
 export const dayMap: { [num: number]: string } = {

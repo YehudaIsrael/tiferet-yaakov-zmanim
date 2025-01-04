@@ -17,6 +17,7 @@ export const useCalendarAPI = () => {
   const { checkForShabbat } = useCalculateSpecialDays();
   const times = useRef<Times>(initialTimes);
   const timesElev = useRef<Times>(initialTimes);
+  const calendar = useRef<CalendarDate[]>([]);
 
   useEffect(() => {
     const scheduleNextUpdate = () => {
@@ -35,19 +36,26 @@ export const useCalendarAPI = () => {
     }, 60000);
 
     const setToday = () => {
-      const { timeOfYear, timeOfYearElev } = getFromLocalStorage();
-      if (!timeOfYear || !timeOfYearElev) {
+      const { timeOfYear, timeOfYearElev, calendarYears } = getFromLocalStorage();
+      if (!timeOfYear || !timeOfYearElev || !calendarYears) {
         getYearTimes().then(() => initFunctions());
         return;
       }
       const formattedToday = getFormattedDate();
       times.current = JSON.parse(timeOfYear)[formattedToday];
       timesElev.current = JSON.parse(timeOfYearElev)[formattedToday];
+      calendar.current = JSON.parse(calendarYears);
     };
 
+    if (!times.current || !timesElev.current || !calendar.current.length) {
+      getYearTimes().then(() => initFunctions());
+    }
+
     const initFunctions = () => {
-      getHebrewDate();
-      getParsha();
+      checkCalendar(() => {
+        getHebrewDate();
+        getParsha();
+      });
       setToday();
       selectDaySection();
       scheduleNextUpdate();
@@ -63,7 +71,7 @@ export const useCalendarAPI = () => {
     return {
       timeOfYear: localStorage.getItem(`timeOfYear-${year}`),
       timeOfYearElev: localStorage.getItem(`timeOfYearElev-${year}`),
-      calendar: localStorage.getItem('calendar'),
+      calendarYears: localStorage.getItem('calendar'),
     };
   };
 
@@ -81,14 +89,14 @@ export const useCalendarAPI = () => {
 
     const responses = await Promise.all(urls.map(url => fetch(url)));
     const data = await Promise.all(responses.map(response => response.json()));
-    const [times1, times2, timesElev1, timesElev2, calendar, calendarNext] = data;
+    const [times1, times2, timesElev1, timesElev2, calendarRes, calendarNext] = data;
 
     const timeOfYear = groupByDate(times1.times, times2.times);
     const timeOfYearElev = groupByDate(timesElev1.times, timesElev2.times);
 
     localStorage.setItem(`timeOfYear-${year}`, JSON.stringify(timeOfYear));
     localStorage.setItem(`timeOfYearElev-${year}`, JSON.stringify(timeOfYearElev));
-    localStorage.setItem('calendar', JSON.stringify([...calendar.items, ...calendarNext.items]));
+    localStorage.setItem('calendar', JSON.stringify([...calendarRes.items, ...calendarNext.items]));
   };
 
   const groupByDate = (...times: { [key: string]: TimeEntry }[]): GroupedData => {
@@ -113,41 +121,47 @@ export const useCalendarAPI = () => {
   };
 
   const checkCalendar = (func: Function) => {
-    const { calendar } = getFromLocalStorage();
-    if (!calendar) {
+    const { calendarYears } = getFromLocalStorage();
+    if (!calendarYears) {
       getYearTimes().then(() => func());
       return null;
     }
-    return JSON.parse(calendar);
+    const nextYear = (new Date().getFullYear() + 1).toString();
+    const parsedCalendar = JSON.parse(calendarYears);
+    if (!parsedCalendar.some((day: CalendarDate) => day.date.includes(nextYear))) {
+      getYearTimes().then(() => func());
+      return null;
+    }
+    func();
   };
 
   const getHebrewDate = (isNight?: boolean) => {
-    const calendar = checkCalendar(getParsha);
-    if (!calendar) return;
     const date = testDate();
     const formatted = date.add(isNight ? 1 : 0, 'day').format('YYYY-MM-DD');
-    const { heDateParts } = calendar.find(
+    const day = calendar.current.find(
       (day: CalendarDate) => day.date === formatted && day.category === CalendarCategory.hebdate
     );
-    setHebrewDate(`${heDateParts.d} ${heDateParts.m} ${heDateParts.y}`);
+    if (!day) return;
+    setHebrewDate(`${day.heDateParts?.d} ${day.heDateParts?.m} ${day.heDateParts?.y}`);
   };
 
   const getParsha = (isMotzeiShabbat?: boolean) => {
-    const calendar = checkCalendar(getParsha);
-    if (!calendar) return;
     const date = testDate();
     const formatted = date
       .add(isMotzeiShabbat ? 1 : 0, 'week')
       .startOf('week')
       .add(6, 'day')
       .format('YYYY-MM-DD');
-    const parsha = calendar.find(
+    const parsha = calendar.current.find(
       (day: CalendarDate) => day.date === formatted && day.category === CalendarCategory.parashat
     );
-    setParsha(parsha.hebrew);
+    setParsha(parsha?.hebrew || '');
   };
 
   const selectDaySection = () => {
+    if (!times.current || !timesElev.current) {
+      return;
+    }
     const now = testDate();
     const midnight = dayjs().startOf('day').subtract(2, 'minutes');
     const beforeHaneitz = dayjs(times.current.sunrise).subtract(3, 'hours');

@@ -2,7 +2,7 @@ import { useCalculateSpecialDays } from '../hooks';
 import type { ApiTimes } from '../types';
 
 export default function BeforeClock({ times, timesElev }: ApiTimes) {
-  const { checkForFriday, getCandleLightingTime, checkForShabbat, afterHatzot, calculateRTam } =
+  const { checkForFriday, getCandleLightingTime, checkForShabbat, afterZmamTefilah, calculateRTam } =
     useCalculateSpecialDays();
 
   return (
@@ -12,7 +12,7 @@ export default function BeforeClock({ times, timesElev }: ApiTimes) {
           <label>הדלקת נרות</label>
           <div className="time">{getCandleLightingTime(timesElev)}</div>
         </>
-      ) : checkForShabbat() && afterHatzot(times) ? (
+      ) : checkForShabbat() && afterZmamTefilah(times) ? (
         <>
           <label>צאת שבת לר' תם</label>
           <div className="time">{calculateRTam(timesElev)}</div>

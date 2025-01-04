@@ -1,4 +1,4 @@
-import BeforeClock from './AfterClock';
+import BeforeClock from './BeforeClock';
 import AfterClock from './AfterClock';
 import Time from './Time';
 import { use24HrTime } from '../hooks';

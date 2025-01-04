@@ -5,31 +5,24 @@ import type { Times } from '../types';
 export const useCalculateSpecialDays = () => {
   const checkForFriday = () => testDate().day() === 5;
 
-  const getCandleLightingTime = (timesElev: Times) => {
-    console.log(timesElev);
-    const candles = dayjs(timesElev?.sunset).subtract(40, 'minutes');
-    return candles.format('HH:mm');
-  };
+  const getCandleLightingTime = (timesElev: Times) =>
+    dayjs(timesElev?.sunset).subtract(40, 'minutes').format('HH:mm');
 
   const checkForShabbat = () => testDate().day() === 6;
 
-  const afterHatzot = (times: Times) => dayjs(times.chatzot) < dayjs();
+  const afterZmamTefilah = (times: Times) => dayjs(times.sofZmanTfilla) < testDate();
 
-  const calculateEndShabbat = (timesElev: Times) => {
-    const rTam = dayjs(timesElev?.tzeit85deg).add(4, 'minutes');
-    return rTam.format('HH:mm');
-  };
+  const calculateEndShabbat = (timesElev: Times) =>
+    dayjs(timesElev?.tzeit85deg).add(4, 'minutes').format('HH:mm');
 
-  const calculateRTam = (timesElev: Times) => {
-    const rTam = dayjs(timesElev?.sunset).add(72, 'minutes');
-    return rTam.format('HH:mm');
-  };
+  const calculateRTam = (timesElev: Times) =>
+    dayjs(timesElev?.sunset).add(72, 'minutes').format('HH:mm');
 
   return {
     checkForFriday,
     getCandleLightingTime,
     checkForShabbat,
-    afterHatzot,
+    afterZmamTefilah,
     calculateEndShabbat,
     calculateRTam,
   };

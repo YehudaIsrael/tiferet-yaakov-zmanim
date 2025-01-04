@@ -1,5 +1,5 @@
 import { use24HrTime } from '../hooks';
-import BeforeClock from './AfterClock';
+import BeforeClock from './BeforeClock';
 import AfterClock from './AfterClock';
 import Time from './Time';
 import type { ApiTimes } from '../types';
