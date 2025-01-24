@@ -14,7 +14,7 @@ export default function Yahrzeit() {
   return (
     <div className="yahrzeit container" onClick={() => navigate(Paths.Upload)}>
       <div className="jewish-week">
-        {getDayTitle(daySection)} פרשת {parsha}
+        {getDayTitle(daySection)} פרשת {parsha} - {hebrewDate}
       </div>
 
       <div className="name">

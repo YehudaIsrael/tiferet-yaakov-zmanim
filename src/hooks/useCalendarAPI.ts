@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useCalculateSpecialDays } from './useCalculateSpecialDays';
 import { initialTimes, testDate } from '../utils';
-import { CalendarCategory, DaySection } from '../enums';
+import { CalendarCategory, DaySection, Paths } from '../enums';
 import type { CalendarDate, GroupedData, TimeEntry, Times } from '../types';
 
 dayjs.extend(customParseFormat);
@@ -13,11 +14,16 @@ export const getFormattedDate = () => testDate().format('YYYY-MM-DD');
 export const useCalendarAPI = () => {
   const [hebrewDate, setHebrewDate] = useState('');
   const [parsha, setParsha] = useState('');
+  const [holiday, setHoliday] = useState('');
+  const [omer, setOmer] = useState('');
   const [daySection, setDaySection] = useState<DaySection>(DaySection.Night);
   const { checkForShabbat } = useCalculateSpecialDays();
   const times = useRef<Times>(initialTimes);
   const timesElev = useRef<Times>(initialTimes);
   const calendar = useRef<CalendarDate[]>([]);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const scheduleNextUpdate = () => {
@@ -55,6 +61,9 @@ export const useCalendarAPI = () => {
       checkCalendar(() => {
         getHebrewDate();
         getParsha();
+        getHoliday();
+        getOmerCount();
+        getYahrzeit();
       });
       setToday();
       selectDaySection();
@@ -101,7 +110,6 @@ export const useCalendarAPI = () => {
 
   const groupByDate = (...times: { [key: string]: TimeEntry }[]): GroupedData => {
     const result: GroupedData = {};
-
     times.forEach(source => {
       for (const key in source) {
         if (source.hasOwnProperty(key)) {
@@ -135,12 +143,17 @@ export const useCalendarAPI = () => {
     func();
   };
 
-  const getHebrewDate = (isNight?: boolean) => {
+  const getCalendarDateFromCategory = (category: CalendarCategory, isNight?: boolean) => {
     const date = testDate();
     const formatted = date.add(isNight ? 1 : 0, 'day').format('YYYY-MM-DD');
     const day = calendar.current.find(
-      (day: CalendarDate) => day.date === formatted && day.category === CalendarCategory.hebdate
+      (day: CalendarDate) => day.date === formatted && day.category === category
     );
+    return day;
+  };
+
+  const getHebrewDate = (isNight?: boolean) => {
+    const day = getCalendarDateFromCategory(CalendarCategory.hebdate, isNight);
     if (!day) return;
     setHebrewDate(`${day.heDateParts?.d} ${day.heDateParts?.m} ${day.heDateParts?.y}`);
   };
@@ -156,6 +169,25 @@ export const useCalendarAPI = () => {
       (day: CalendarDate) => day.date === formatted && day.category === CalendarCategory.parashat
     );
     setParsha(parsha?.hebrew || '');
+  };
+
+  const getHoliday = (isNight?: boolean) => {
+    const holidayDate = getCalendarDateFromCategory(CalendarCategory.holiday, isNight);
+    setHoliday(holidayDate?.hebrew || '');
+  };
+
+  const getOmerCount = (isNight?: boolean) => {
+    const omerDate = getCalendarDateFromCategory(CalendarCategory.omer, isNight);
+    setOmer(omerDate?.title || '');
+  };
+
+  const getYahrzeit = (isNight?: boolean) => {
+    const yahrzeit = getCalendarDateFromCategory(CalendarCategory.hebdate, isNight);
+    if (location.pathname === Paths.Home && yahrzeit?.hdate.includes('12 Cheshvan')) {
+      navigate(Paths.Yahrzeit);
+    } else if (location.pathname === Paths.Yahrzeit && !yahrzeit) {
+      navigate(Paths.Home);
+    }
   };
 
   const selectDaySection = () => {
@@ -183,9 +215,20 @@ export const useCalendarAPI = () => {
     } else {
       getHebrewDate(true);
       getParsha(checkForShabbat());
+      getHoliday(true);
+      getOmerCount(true);
+      getYahrzeit(true);
       setDaySection(DaySection.Night);
     }
   };
 
-  return { hebrewDate, parsha, times: times.current, timesElev: timesElev.current, daySection };
+  return {
+    hebrewDate,
+    parsha,
+    holiday,
+    omer,
+    times: times.current,
+    timesElev: timesElev.current,
+    daySection,
+  };
 };

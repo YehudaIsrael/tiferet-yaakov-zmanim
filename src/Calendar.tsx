@@ -6,7 +6,7 @@ import Afternoon from './components/Afternoon';
 import Night from './components/Night';
 
 export default function Calendar() {
-  const { hebrewDate, parsha, times, timesElev, daySection } = useCalendarAPI();
+  const { hebrewDate, parsha, holiday, omer, times, timesElev, daySection } = useCalendarAPI();
   const { getDayTitle } = useCalculateTimes();
 
   return (
@@ -14,16 +14,16 @@ export default function Calendar() {
       <div className="name">לעילוי נשמת חיים ישראל פינחס בן משה אהרון</div>
 
       <div className="jewish-week">
-        {getDayTitle(daySection)} {parsha}
+        {getDayTitle(daySection)} {parsha} {holiday ? `- ${holiday}` : ''}
       </div>
       <div className="jewish-date">{hebrewDate}</div>
 
-      {/* {today['ספירת העומר'] && (
+      {omer && (
         <div className="omer">
-          <label>סה"ע</label>
-          <div>{today['ספירת העומר']}</div>
+          <label>ספירת העומר</label>
+          <span>{omer.match(/\d+/)?.[0]}</span>
         </div>
-      )} */}
+      )}
 
       {daySection === DaySection.EarlyMorning ? (
         <EarlyMorning times={times} timesElev={timesElev} />

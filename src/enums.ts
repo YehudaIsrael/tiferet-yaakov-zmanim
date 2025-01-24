@@ -15,4 +15,7 @@ export enum Paths {
 export enum CalendarCategory {
   parashat = 'parashat',
   hebdate = 'hebdate',
+  holiday = 'holiday',
+  omer = 'omer',
+  roshchodesh = 'roshchodesh',
 }

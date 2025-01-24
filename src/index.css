@@ -4,6 +4,7 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
+  user-select: none;
 }
 
 .container {
@@ -41,13 +42,17 @@ body,
 
 .omer {
   position: fixed;
-  top:90px;
-  left: 50px;
-  font-size: 115px;
+  top: 385px;
+  left: 710px;
+  font-size: 90px;
   line-height: .9;
   padding: 15px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 20px 20px;
   border-radius: 20px;
+}
+
+.omer label {
+  margin-left: 20px;
 }
 
 .grid {
@@ -64,7 +69,7 @@ body,
 }
 
 .top-left, .top-right {
-  margin-top: -25px;
+  margin-top: -80px;
 }
 
 .top-left {
@@ -77,6 +82,10 @@ body,
 
 .center {
   grid-area: center;
+}
+
+.bottom-left, .bottom-center, .bottom-right {
+  margin-bottom: -30px;
 }
 
 .bottom-left {
@@ -92,7 +101,7 @@ body,
 }
 
 .placeholder {
-  height: 180px;
+  height: 210px;
 }
 
 label {
@@ -107,7 +116,7 @@ label {
 .time-now {
   font-size: 280px;
   line-height: 0.85;
-  margin: -30px 0 30px;
+  margin: 0 0 30px;
 }
 
 .shabbat-space {
@@ -166,5 +175,6 @@ label {
 
 
 .license {
+  margin-top: 20px;
   font-size: 20px;
 }
