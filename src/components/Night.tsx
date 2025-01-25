@@ -7,7 +7,7 @@ export default function Night({ times, timesElev }: ApiTimes) {
 
   return (
     <div className="grid">
-      <div className="placeholder"></div>
+      <div className="placeholder-night"></div>
 
       <Time />
 

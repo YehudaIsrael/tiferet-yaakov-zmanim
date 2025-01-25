@@ -16,7 +16,7 @@ export const useCalculateTimes = () => {
     const halfHourAfterChatzot = dayjs(times?.chatzot).add(30, 'minute');
     return dayjs(times?.minchaGedola).isBefore(halfHourAfterChatzot)
       ? halfHourAfterChatzot.format('HH:mm:ss')
-      : times?.minchaGedola;
+      : dayjs(times?.minchaGedola).format('HH:mm:ss');
   };
 
   return { getDayTitle, getMinchaGedolah };

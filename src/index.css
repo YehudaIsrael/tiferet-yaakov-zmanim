@@ -43,7 +43,7 @@ body,
 .omer {
   position: fixed;
   top: 385px;
-  left: 710px;
+  left: 705px;
   font-size: 90px;
   line-height: .9;
   padding: 15px;
@@ -101,7 +101,11 @@ body,
 }
 
 .placeholder {
-  height: 210px;
+  height: 2100px;
+}
+
+.placeholder-night {
+  height: 160px;
 }
 
 label {
