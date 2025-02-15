@@ -16,7 +16,7 @@ export const useCalculateSpecialDays = () => {
     dayjs(timesElev?.tzeit85deg).add(4, 'minutes').format('HH:mm');
 
   const calculateRTam = (timesElev: Times) =>
-    dayjs(timesElev?.sunset).add(72, 'minutes').format('HH:mm');
+    dayjs(timesElev?.sunset).add(72, 'minutes').format('HH:mm:ss');
 
   return {
     checkForFriday,

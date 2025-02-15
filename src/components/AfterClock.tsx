@@ -14,7 +14,7 @@ export default function BeforeClock({ times, timesElev }: ApiTimes) {
         </>
       ) : checkForShabbat() && afterZmamTefilah(times) ? (
         <>
-          <label>צאת שבת לר' תם</label>
+          <label>צאת שבת לר"ת</label>
           <div className="time">{calculateRTam(timesElev)}</div>
         </>
       ) : (
