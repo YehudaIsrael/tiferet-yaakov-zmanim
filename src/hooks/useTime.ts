@@ -11,7 +11,13 @@ export const useTime = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(testDate().format('H:mm:ss'));
+      const currentSeconds = dayjs().second();
+
+      if (currentSeconds === 11) {
+        setTime('OCD');
+      } else {
+        setTime(testDate().format('H:mm:ss'));
+      }
     }, 1000);
 
     return () => clearInterval(interval);
