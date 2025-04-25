@@ -1,16 +1,19 @@
 import AfterClock from './AfterClock';
 import BeforeClock from './BeforeClock';
+import Omer from './Omer';
 import Time from './Time';
 import { use24HrTime, useCalculateTimes } from '../hooks';
 import type { ApiTimes } from '../types';
 
-export default function Afternoon({ times, timesElev }: ApiTimes) {
+export default function Afternoon({ times, timesElev, omer }: ApiTimes) {
   const { convertFromUtcTime } = use24HrTime();
   const { getMinchaGedolah } = useCalculateTimes();
 
   return (
     <div className="grid">
       <BeforeClock times={times} timesElev={timesElev} />
+
+      {omer && <Omer omer={omer} />}
 
       <AfterClock times={times} timesElev={timesElev} />
 

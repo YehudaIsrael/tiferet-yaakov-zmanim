@@ -1,13 +1,16 @@
 import { use24HrTime } from '../hooks/use24HrTime';
+import Omer from './Omer';
 import Time from './Time';
 import type { ApiTimes } from '../types';
 
-export default function Night({ times, timesElev }: ApiTimes) {
+export default function Night({ times, timesElev, omer }: ApiTimes) {
   const { convertFromUtcTime } = use24HrTime();
 
   return (
     <div className="grid">
       <div className="placeholder-night"></div>
+
+      {omer && <Omer omer={omer} />}
 
       <Time />
 

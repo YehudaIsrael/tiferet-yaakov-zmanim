@@ -211,6 +211,9 @@ export const useCalendarAPI = () => {
     } else if (now > afterHaneitz && now < afternoon) {
       setDaySection(DaySection.Morning);
     } else if (now > afternoon && (now < night || (isShabbat && now < rTam))) {
+      if (now > night) {
+        getOmerCount(true);
+      }
       setDaySection(DaySection.Afternoon);
     } else {
       getHebrewDate(true);

@@ -1,4 +1,4 @@
-import { CalendarCategory } from "./enums";
+import { CalendarCategory } from './enums';
 
 export type Today = {
   [key: string]: any;
@@ -38,6 +38,7 @@ export type Times = {
 export type ApiTimes = {
   times: Times;
   timesElev: Times;
+  omer?: string;
 };
 
 export type TimeEntry = {

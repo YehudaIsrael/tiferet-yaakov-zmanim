@@ -41,9 +41,6 @@ body,
 }
 
 .omer {
-  position: fixed;
-  top: 385px;
-  left: 705px;
   font-size: 90px;
   line-height: .9;
   padding: 15px;
@@ -74,6 +71,10 @@ body,
 
 .top-left {
   grid-area: top-left;
+}
+
+.top-center {
+  grid-area: top-center;
 }
 
 .top-right {

@@ -18,21 +18,14 @@ export default function Calendar() {
       </div>
       <div className="jewish-date">{hebrewDate}</div>
 
-      {omer && (
-        <div className="omer">
-          <label>ספירת העומר</label>
-          <span>{omer.match(/\d+/)?.[0]}</span>
-        </div>
-      )}
-
       {daySection === DaySection.EarlyMorning ? (
-        <EarlyMorning times={times} timesElev={timesElev} />
+        <EarlyMorning times={times} timesElev={timesElev} omer={omer} />
       ) : daySection === DaySection.Morning ? (
-        <Morning times={times} timesElev={timesElev} />
+        <Morning times={times} timesElev={timesElev} omer={omer} />
       ) : daySection === DaySection.Afternoon ? (
-        <Afternoon times={times} timesElev={timesElev} />
+        <Afternoon times={times} timesElev={timesElev} omer={omer} />
       ) : (
-        <Night times={times} timesElev={timesElev} />
+        <Night times={times} timesElev={timesElev} omer={omer} />
       )}
 
       <div className="license">
