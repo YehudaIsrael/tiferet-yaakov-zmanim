@@ -12,6 +12,7 @@ dayjs.extend(customParseFormat);
 export const getFormattedDate = () => testDate().format('YYYY-MM-DD');
 
 export const useCalendarAPI = () => {
+  const [date, setDate] = useState<CalendarDate>();
   const [hebrewDate, setHebrewDate] = useState('');
   const [parsha, setParsha] = useState('');
   const [holiday, setHoliday] = useState('');
@@ -204,6 +205,9 @@ export const useCalendarAPI = () => {
 
     const isShabbat = now.day() === 6;
 
+    let hebDate = getCalendarDateFromCategory(CalendarCategory.hebdate);
+    hebDate && setDate(hebDate);
+
     if (now > midnight && now < beforeHaneitz) {
       setDaySection(DaySection.Night);
     } else if (now > beforeHaneitz && now < afterHaneitz) {
@@ -222,10 +226,13 @@ export const useCalendarAPI = () => {
       getOmerCount(true);
       getYahrzeit(true);
       setDaySection(DaySection.Night);
+      hebDate = getCalendarDateFromCategory(CalendarCategory.hebdate, true);
+      hebDate && setDate(hebDate);
     }
   };
 
   return {
+    date,
     hebrewDate,
     parsha,
     holiday,

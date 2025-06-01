@@ -3,7 +3,7 @@ import Omer from './Omer';
 import Time from './Time';
 import type { ApiTimes } from '../types';
 
-export default function Night({ times, timesElev, omer }: ApiTimes) {
+export default function Night({ times, omer }: ApiTimes) {
   const { convertFromUtcTime } = use24HrTime();
 
   return (

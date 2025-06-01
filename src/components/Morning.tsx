@@ -5,16 +5,17 @@ import Time from './Time';
 import { use24HrTime } from '../hooks';
 import type { ApiTimes } from '../types';
 
-export default function Morning({ times, timesElev, omer }: ApiTimes) {
+export default function Morning({ omer, ...props }: ApiTimes) {
+  const { times } = props;
   const { convertFromUtcTime } = use24HrTime();
 
   return (
     <div className="grid">
-      <BeforeClock times={times} timesElev={timesElev} />
+      <BeforeClock {...props} />
 
       {omer && <Omer omer={omer} />}
 
-      <AfterClock times={times} timesElev={timesElev} />
+      <AfterClock {...props} />
 
       <Time />
 

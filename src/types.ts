@@ -36,6 +36,7 @@ export type Times = {
 };
 
 export type ApiTimes = {
+  date?: CalendarDate | undefined;
   times: Times;
   timesElev: Times;
   omer?: string;
