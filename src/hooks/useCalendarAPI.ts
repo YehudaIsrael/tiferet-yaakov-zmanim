@@ -88,10 +88,10 @@ export const useCalendarAPI = () => {
   const getYearTimes = async () => {
     const year = new Date().getFullYear();
     const nextYear = year + 1;
-    const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-07-13&sec=1`;
-    const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-07-14&end=${year}-12-31&sec=1`;
-    const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-07-13&sec=1`;
-    const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-07-14&end=${year}-12-31&sec=1`;
+    const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-06-30&sec=1`;
+    const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-07-01&end=${year}-12-31&sec=1`;
+    const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-06-30&sec=1`;
+    const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-07-01&end=${year}-12-31&sec=1`;
     const calendarUrl = `https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=${year}&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on`;
     const calendarNextUrl = `https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=${nextYear}&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on`;
 
