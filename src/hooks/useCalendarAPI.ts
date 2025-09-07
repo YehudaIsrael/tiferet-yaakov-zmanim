@@ -174,6 +174,10 @@ export const useCalendarAPI = () => {
 
   const getHoliday = (isNight?: boolean) => {
     const holidayDate = getCalendarDateFromCategory(CalendarCategory.holiday, isNight);
+    if (holidayDate?.hebrew === 'ראש השנה למעשר בהמה') {
+      setHoliday('ר"ה למעשר בהמה');
+      return
+    }
     setHoliday(holidayDate?.hebrew || '');
   };
 
