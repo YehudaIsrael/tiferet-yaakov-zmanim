@@ -22,6 +22,7 @@ export const useCalendarAPI = () => {
   const times = useRef<Times>(initialTimes);
   const timesElev = useRef<Times>(initialTimes);
   const calendar = useRef<CalendarDate[]>([]);
+  const holidayObj = useRef<CalendarDate | undefined>();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -88,21 +89,33 @@ export const useCalendarAPI = () => {
   const getYearTimes = async () => {
     const year = new Date().getFullYear();
     const nextYear = year + 1;
-    const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-06-30&sec=1`;
-    const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-07-01&end=${year}-12-31&sec=1`;
-    const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-06-30&sec=1`;
-    const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-07-01&end=${year}-12-31&sec=1`;
+    const timesUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-01-01&end=${year}-04-30&sec=1`;
+    const timesUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-06-01&end=${year}-08-31&sec=1`;
+    const timesUrl3 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&start=${year}-09-01&end=${year}-12-31&sec=1`;
+    const timesElevUrl1 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-01-01&end=${year}-04-30&sec=1`;
+    const timesElevUrl2 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-05-01&end=${year}-08-31&sec=1`;
+    const timesElevUrl3 = `https://www.hebcal.com/zmanim?cfg=json&geonameid=283046&ue=on&start=${year}-09-01&end=${year}-12-31&sec=1`;
     const calendarUrl = `https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=${year}&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on`;
     const calendarNextUrl = `https://www.hebcal.com/hebcal?v=1&cfg=json&geonameid=283046&year=${nextYear}&maj=on&min=on&nx=on&mf=on&ss=on&i=on&s=on&leyning=off&d=on&o=on`;
 
-    const urls = [timesUrl1, timesUrl2, timesElevUrl1, timesElevUrl2, calendarUrl, calendarNextUrl];
+    const urls = [
+      timesUrl1,
+      timesUrl2,
+      timesUrl3,
+      timesElevUrl1,
+      timesElevUrl2,
+      timesElevUrl3,
+      calendarUrl,
+      calendarNextUrl,
+    ];
 
     const responses = await Promise.all(urls.map(url => fetch(url)));
     const data = await Promise.all(responses.map(response => response.json()));
-    const [times1, times2, timesElev1, timesElev2, calendarRes, calendarNext] = data;
+    const [times1, times2, times3, timesElev1, timesElev2, timesElev3, calendarRes, calendarNext] =
+      data;
 
-    const timeOfYear = groupByDate(times1.times, times2.times);
-    const timeOfYearElev = groupByDate(timesElev1.times, timesElev2.times);
+    const timeOfYear = groupByDate(times1.times, times2.times, times3.times);
+    const timeOfYearElev = groupByDate(timesElev1.times, timesElev2.times, timesElev3.times);
 
     localStorage.setItem(`timeOfYear-${year}`, JSON.stringify(timeOfYear));
     localStorage.setItem(`timeOfYearElev-${year}`, JSON.stringify(timeOfYearElev));
@@ -174,11 +187,31 @@ export const useCalendarAPI = () => {
 
   const getHoliday = (isNight?: boolean) => {
     const holidayDate = getCalendarDateFromCategory(CalendarCategory.holiday, isNight);
+    holidayObj.current = holidayDate;
     if (holidayDate?.hebrew === 'ראש השנה למעשר בהמה') {
       setHoliday('ר"ה למעשר בהמה');
-      return
+      return;
     }
     setHoliday(holidayDate?.hebrew || '');
+  };
+
+  const getIsTodayEndHoliday = (hebDate: CalendarDate | undefined) => {
+    if (!holidayObj.current || !hebDate) return false;
+    const holidayList = [
+      '2 Tishrei',
+      '10 Tishrei',
+      '15 Tishrei',
+      '22 Tishrei',
+      '15 Nisan',
+      '21 Nisan',
+      '6 Sivan',
+    ];
+    const now = testDate();
+    return (
+      holidayList.some(
+        day => holidayObj.current?.hdate.includes(day) && hebDate.hdate.includes(day)
+      ) && now.day() !== 5
+    );
   };
 
   const getOmerCount = (isNight?: boolean) => {
@@ -212,13 +245,15 @@ export const useCalendarAPI = () => {
     let hebDate = getCalendarDateFromCategory(CalendarCategory.hebdate);
     hebDate && setDate(hebDate);
 
+    const isEndHoliday = getIsTodayEndHoliday(hebDate);
+
     if (now > midnight && now < beforeHaneitz) {
       setDaySection(DaySection.Night);
     } else if (now > beforeHaneitz && now < afterHaneitz) {
       setDaySection(DaySection.EarlyMorning);
     } else if (now > afterHaneitz && now < afternoon) {
       setDaySection(DaySection.Morning);
-    } else if (now > afternoon && (now < night || (isShabbat && now < rTam))) {
+    } else if (now > afternoon && (now < night || ((isShabbat || isEndHoliday) && now < rTam))) {
       if (now > night) {
         getOmerCount(true);
       }
