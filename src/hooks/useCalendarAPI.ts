@@ -192,6 +192,10 @@ export const useCalendarAPI = () => {
       setHoliday('ר"ה למעשר בהמה');
       return;
     }
+    if (holidayDate?.hebrew?.includes('הושענא רבה')) {
+      setHoliday('הושענא רבה');
+      return;
+    }
     setHoliday(holidayDate?.hebrew || '');
   };
 
