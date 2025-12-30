@@ -240,7 +240,8 @@ export const useCalendarAPI = () => {
     const midnight = dayjs().startOf('day').subtract(2, 'minutes');
     const beforeHaneitz = dayjs(times.current.sunrise).subtract(3, 'hours');
     const afterHaneitz = dayjs(times.current.sunrise).add(30, 'minutes');
-    const afternoon = dayjs(times.current.sofZmanTfilla).add(30, 'minutes');
+    const afterDavening = dayjs(times.current.sofZmanTfilla).add(30, 'minutes');
+    const afternoon = dayjs('13:45', 'HH:mm');
     const night = dayjs(timesElev.current.sunset).add(20, 'minutes');
     const rTam = dayjs(timesElev.current.sunset).add(82, 'minutes');
 
@@ -255,8 +256,10 @@ export const useCalendarAPI = () => {
       setDaySection(DaySection.Night);
     } else if (now > beforeHaneitz && now < afterHaneitz) {
       setDaySection(DaySection.EarlyMorning);
-    } else if (now > afterHaneitz && now < afternoon) {
+    } else if (now > afterHaneitz && now < afterDavening) {
       setDaySection(DaySection.Morning);
+    } else if (now > afterDavening && now < afternoon) {
+      setDaySection(DaySection.LateMorning);
     } else if (now > afternoon && (now < night || ((isShabbat || isEndHoliday) && now < rTam))) {
       if (now > night) {
         getOmerCount(true);

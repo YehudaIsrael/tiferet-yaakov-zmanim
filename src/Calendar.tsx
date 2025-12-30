@@ -2,6 +2,7 @@ import { useCalculateTimes, useCalendarAPI } from './hooks';
 import { DaySection } from './enums';
 import EarlyMorning from './components/EarlyMorning';
 import Morning from './components/Morning';
+import LateMorning from './components/LateMorning';
 import Afternoon from './components/Afternoon';
 import Night from './components/Night';
 
@@ -22,6 +23,8 @@ export default function Calendar() {
         <EarlyMorning {...params} />
       ) : daySection === DaySection.Morning ? (
         <Morning {...params} />
+      ) : daySection === DaySection.LateMorning ? (
+        <LateMorning {...params} />
       ) : daySection === DaySection.Afternoon ? (
         <Afternoon {...params} />
       ) : (

@@ -19,9 +19,14 @@ export default function Night({ times, omer }: ApiTimes) {
         <div className="time">{convertFromUtcTime(times?.chatzotNight)}</div>
       </div>
 
-      <div className="bottom-right">
+      <div className="bottom-center">
         <label>הנץ החמה</label>
         <div className="time">{convertFromUtcTime(times?.sunrise)}</div>
+      </div>
+
+       <div className="bottom-right">
+        <label>סו"ז ק"ש גר"א</label>
+        <div className="time">{convertFromUtcTime(times?.sofZmanShma)}</div>
       </div>
     </div>
   );

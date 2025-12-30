@@ -1,6 +1,7 @@
 export enum DaySection {
   EarlyMorning,
   Morning,
+  LateMorning,
   Afternoon,
   Night,
 }

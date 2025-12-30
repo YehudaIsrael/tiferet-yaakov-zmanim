@@ -2,12 +2,13 @@ import AfterClock from './AfterClock';
 import BeforeClock from './BeforeClock';
 import Omer from './Omer';
 import Time from './Time';
-import { use24HrTime } from '../hooks';
+import { use24HrTime, useCalculateTimes } from '../hooks';
 import type { ApiTimes } from '../types';
 
-export default function Afternoon({ omer, ...props }: ApiTimes) {
-  const { times, timesElev } = props;
+export default function LateMorning({ omer, ...props }: ApiTimes) {
+  const { times } = props;
   const { convertFromUtcTime } = use24HrTime();
+  const { getMinchaGedolah } = useCalculateTimes();
 
   return (
     <div className="grid">
@@ -25,13 +26,13 @@ export default function Afternoon({ omer, ...props }: ApiTimes) {
       </div>
 
       <div className="bottom-center">
-        <label>סו"ז תפילה גר"א</label>
-        <div className="time">{convertFromUtcTime(times?.sofZmanTfilla)}</div>
+        <label>חצות</label>
+        <div className="time">{convertFromUtcTime(times?.chatzot)}</div>
       </div>
 
       <div className="bottom-right">
-        <label>שקיעה</label>
-        <div className="time">{convertFromUtcTime(timesElev?.sunset)}</div>
+        <label>מנחה גדולה</label>
+        <div className="time">{getMinchaGedolah(times)}</div>
       </div>
     </div>
   );

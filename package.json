@@ -30,7 +30,7 @@
   "scripts": {
     "react-start": "react-scripts start",
     "electron-start": "wait-on http://localhost:3000 && yarn electron",
-    "electron": "electron electron",
+    "electron": "ELECTRON_DISABLE_SANDBOX=1 electron electron",
     "start": "concurrently \"BROWSER=none yarn react-start\" \"yarn electron-start\"",
     "build": "react-scripts build",
     "serve": "serve -s build",
