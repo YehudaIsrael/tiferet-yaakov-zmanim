@@ -1,5 +1,5 @@
 const { app, BrowserWindow } = require('electron');
-const { path } = require('path')
+const path = require('path');
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -15,6 +15,16 @@ function createWindow() {
         : 'http://localhost:3000';
 
     mainWindow.loadURL(startUrl);
+
+    mainWindow.webContents.on('render-process-gone', (event, details) => {
+        console.log(`Renderer process gone (${details.reason}), reloading...`);
+        mainWindow.reload();
+    });
+
+    mainWindow.on('unresponsive', () => {
+        console.log('Window stuck, reloading...');
+        mainWindow.reload();
+    });
 
     mainWindow.on('closed', () => {
         app.quit();
