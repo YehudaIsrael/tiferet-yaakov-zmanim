@@ -19,7 +19,7 @@ body,
 
 .container:after {
   content: '';
-  background-image: url(../public/beit-hamikdash.png);
+  background-image: url(/beit-hamikdash.png);
   background-size: cover;
   position: absolute;
   top: 0px;

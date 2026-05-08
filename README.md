@@ -6,9 +6,10 @@
 
 ## Scripts
 
+- `yarn react-start` - runs the Vite dev server on port 3000
 - `yarn start` - locally runs the React app inside an Electron app
 - `yarn package` - creates an Electron build file
-- `yarn release` - creates an React app production build and an Electron build file
+- `yarn release` - creates a React production build and an Electron build file
 
 ## Steps to locally run the application and enable automatic reload
 
